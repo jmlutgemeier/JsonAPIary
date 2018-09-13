@@ -1,5 +1,6 @@
 package com.cradlepoint.jsonapiary.serializers.helpers;
 
+import com.cradlepoint.jsonapiary.annotations.JsonApiIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -62,6 +63,8 @@ public class JsonApiAnnotationAnalyzer {
                 } else if(isOtherJsonApiAnnotationPresent(field.getDeclaredAnnotations(), annotation)) {
                     // This Field is explicitly NOT part of the annotation //
                     continue;
+                } else if (field.isAnnotationPresent(JsonApiIgnore.class)) {
+                    // This Field is explicitly NOT to be included in the JsonAPI serialization
                 } else if(isAnnotationAlsoCatchAll) {
                     // This Field is IMPLICITLY part of the annotation //
                     jsons.put(jsonProperty.value(), fetchFieldValue(jsonApiObject, field, jsonGenerator));
@@ -82,6 +85,8 @@ public class JsonApiAnnotationAnalyzer {
                 } else if(isOtherJsonApiAnnotationPresent(method.getDeclaredAnnotations(), annotation)) {
                     // This Method is explicitly NOT part of the annotation //
                     continue;
+                } else if (method.isAnnotationPresent(JsonApiIgnore.class)) {
+                    // This Field is explicitly NOT to be included in the JsonAPI serialization
                 } else if(isAnnotationAlsoCatchAll) {
                     // This Method is IMPLICITLY part of the annotation //
                     jsons.put(jsonProperty.value(), fetchMethodValue(jsonApiObject, method, jsonGenerator));

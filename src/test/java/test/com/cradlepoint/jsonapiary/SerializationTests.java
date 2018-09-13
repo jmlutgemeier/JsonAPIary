@@ -48,7 +48,7 @@ public class SerializationTests {
     public void envelopeTest() throws Exception {
         // Init Test Objects //
         SimpleObject simpleObject = new SimpleObject(5);
-        simpleObject.getThing2().setThing2(new SimpleObject());
+        simpleObject.getThing2().getNestedThings().get(0).setCir(simpleObject);
         JsonApiEnvelope<SimpleObject> envelope = new JsonApiEnvelope<SimpleObject>(simpleObject);
 
         // Call and Verify //

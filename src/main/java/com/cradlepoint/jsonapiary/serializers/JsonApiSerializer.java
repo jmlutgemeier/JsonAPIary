@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.cradlepoint.jsonapiary.annotations.*;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
-import com.cradlepoint.jsonapiary.enums.JsonApiObjectSerializationContext;
+import com.cradlepoint.jsonapiary.enums.JsonApiObjectContext;
 import com.cradlepoint.jsonapiary.serializers.helpers.JsonApiAnnotationAnalyzer;
 
 import java.io.IOException;
@@ -47,9 +47,18 @@ public class JsonApiSerializer {
     // Public Methods //
     ////////////////////
 
+    /**
+     * Serializes any random Object by detecting if it is JsonAPI annotated or not, then serializing it accordingly
+     * @param object
+     * @param serializationContext
+     * @param jsonGenerator
+     * @param serializerProvider
+     * @return
+     * @throws IOException
+     */
     public Set<Object> serializeRandomObject(
             Object object,
-            JsonApiObjectSerializationContext serializationContext,
+            JsonApiObjectContext serializationContext,
             JsonGenerator jsonGenerator,
             SerializerProvider serializerProvider) throws IOException {
         Set<Object> includes = new HashSet<Object>();
@@ -79,7 +88,7 @@ public class JsonApiSerializer {
      */
     public Set<Object> serializeJsonApiObject(
             Object jsonApiObject,
-            JsonApiObjectSerializationContext serializationContext,
+            JsonApiObjectContext serializationContext,
             JsonGenerator jsonGenerator,
             SerializerProvider serializerProvider) throws IOException {
         // Round up the Attributes, Relationships, and MORE! //
@@ -117,7 +126,7 @@ public class JsonApiSerializer {
             case ATTRIBUTE:
             case META:
                 includes.addAll(
-                        serializeMap(attributes, JsonApiObjectSerializationContext.ATTRIBUTE, jsonGenerator, serializerProvider));
+                        serializeMap(attributes, JsonApiObjectContext.ATTRIBUTE, jsonGenerator, serializerProvider));
                 break;
             default:
                 // Not serialized in this context
@@ -129,7 +138,7 @@ public class JsonApiSerializer {
             case RELATIONSHIP:
             case META:
                 includes.addAll(
-                        serializeMap(links, JsonApiObjectSerializationContext.LINK, jsonGenerator, serializerProvider));
+                        serializeMap(links, JsonApiObjectContext.LINK, jsonGenerator, serializerProvider));
                 break;
             default:
                 // Not serialized in this context
@@ -142,7 +151,7 @@ public class JsonApiSerializer {
             case RELATIONSHIP:
             case META:
                 includes.addAll(
-                        serializeMap(metas, JsonApiObjectSerializationContext.META, jsonGenerator, serializerProvider));
+                        serializeMap(metas, JsonApiObjectContext.META, jsonGenerator, serializerProvider));
                 break;
             default:
                 // Not serialized in this context
@@ -153,7 +162,7 @@ public class JsonApiSerializer {
             case PRIMARY:
             case META:
                 includes.addAll(
-                        serializeMap(relationships, JsonApiObjectSerializationContext.RELATIONSHIP, jsonGenerator, serializerProvider));
+                        serializeMap(relationships, JsonApiObjectContext.RELATIONSHIP, jsonGenerator, serializerProvider));
                 break;
             default:
                 // Not serialized in this context
@@ -166,7 +175,7 @@ public class JsonApiSerializer {
 
     public Set<Object> serializeJsonApiObjectList(
             List<Object> jsonApiObjectList,
-            JsonApiObjectSerializationContext serializationContext,
+            JsonApiObjectContext serializationContext,
             JsonGenerator jsonGenerator,
             SerializerProvider serializerProvider) throws IOException {
 
@@ -187,7 +196,7 @@ public class JsonApiSerializer {
                 case RELATIONSHIP:
                     this.serializeJsonApiObject(
                             element,
-                            JsonApiObjectSerializationContext.RESOURCE_LINKAGE,
+                            JsonApiObjectContext.RESOURCE_LINKAGE,
                             jsonGenerator,
                             serializerProvider);
                     includes.add(element);
@@ -235,12 +244,17 @@ public class JsonApiSerializer {
         }
 
         // Serialize the Type //
-        jsonGenerator.writeStringField(JsonApiKeyConstants.TYPE_KEY, jsonApiObject.getClass().getSimpleName().toLowerCase());
+        JsonApiType typeAnnotation = jsonApiObject.getClass().getAnnotation(JsonApiType.class);
+        if(typeAnnotation == null || typeAnnotation.value().isEmpty()) {
+            jsonGenerator.writeStringField(JsonApiKeyConstants.TYPE_KEY, jsonApiObject.getClass().getSimpleName());
+        } else {
+            jsonGenerator.writeStringField(JsonApiKeyConstants.TYPE_KEY, typeAnnotation.value());
+        }
     }
 
     private Set<Object> serializeMap(
             Map<String, Object> map,
-            JsonApiObjectSerializationContext serializationContext,
+            JsonApiObjectContext serializationContext,
             JsonGenerator jsonGenerator,
             SerializerProvider serializerProvider) throws IOException {
         Set<Object> includes = new HashSet<Object>();

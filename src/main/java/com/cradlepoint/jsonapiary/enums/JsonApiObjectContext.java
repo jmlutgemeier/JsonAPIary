@@ -1,6 +1,6 @@
 package com.cradlepoint.jsonapiary.enums;
 
-public enum JsonApiObjectSerializationContext {
+public enum JsonApiObjectContext {
     PRIMARY,
     ATTRIBUTE,
     RELATIONSHIP,

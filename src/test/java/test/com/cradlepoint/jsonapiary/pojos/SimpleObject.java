@@ -31,7 +31,7 @@ public class SimpleObject {
 
     @JsonApiRelationship
     @JsonProperty("someOtherRelationship")
-    private SimpleObject thing2;
+    private SimpleSubObject thing2;
 
     /////////////////
     // Constructor //
@@ -54,7 +54,7 @@ public class SimpleObject {
         }
         thing = blah;
 
-        thing2 = new SimpleObject();
+        thing2 = new SimpleSubObject();
     }
 
     /////////////////////////
@@ -85,11 +85,11 @@ public class SimpleObject {
         this.thing = thing;
     }
 
-    public SimpleObject getThing2() {
+    public SimpleSubObject getThing2() {
         return this.thing2;
     }
 
-    public void setThing2(SimpleObject thing2) {
+    public void setThing2(SimpleSubObject thing2) {
         this.thing2 = thing2;
     }
 
@@ -97,6 +97,17 @@ public class SimpleObject {
     @JsonProperty("objectBlah")
     public String blah() {
         return "blah!";
+    }
+
+    @JsonApiIgnore
+    @JsonProperty("ignoredThing")
+    public String ignored() {
+        return "THIS SHOULDN'T BE HERE";
+    }
+
+    @JsonProperty("catchAllThing")
+    public String catchAll() {
+        return "this should ahve been caught";
     }
 
 }
