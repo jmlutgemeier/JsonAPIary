@@ -76,9 +76,32 @@ public class JsonApiEnvelopeDeserializer extends StdDeserializer<JsonApiEnvelope
         // Process the "data" block //
         Object dataObject = null;
         if(dataNode.isArray()) {
-            // TODO: Figure out what to do with lists... AHHHHHHHH
+            // Add "primary" list contents into the includeds, in case of circular references... //
+            for(JsonNode primaryDataArrayElement : dataNode) {
+                ResourceLinkage primaryArrayElementResourceLinkage =
+                        DeserializationUtilities.generateResourceLinkageFromNode(primaryDataArrayElement, jsonApiTypeMap);
+                includedsSet.put(primaryArrayElementResourceLinkage, primaryDataArrayElement);
+
+                dataObject = DeserializationUtilities.generateObjectFromNode(primaryDataArrayElement, jsonApiTypeMap);
+                includeds.put(primaryArrayElementResourceLinkage, dataObject);
+            }
+
+            // Deserialize the Things! //
+            for(JsonNode primaryDataArrayElement : dataNode) {
+                ResourceLinkage primaryArrayElementResourceLinkage =
+                        DeserializationUtilities.generateResourceLinkageFromNode(primaryDataArrayElement, jsonApiTypeMap);
+
+                DataObjectDeserializer.deserializeDataObject(
+                        primaryArrayElementResourceLinkage.getType(),
+                        includeds.get(primaryArrayElementResourceLinkage),
+                        primaryDataArrayElement,
+                        jsonApiTypeMap,
+                        includedsSet,
+                        includeds,
+                        deserializationContext);
+            }
         } else {
-            // Add the "primary" object to the includeds, in order to handle circular references //
+            // Add the "primary" object to the includeds... //
             ResourceLinkage primaryObjectResourceLinkage =
                     DeserializationUtilities.generateResourceLinkageFromNode(dataNode, jsonApiTypeMap);
             includedsSet.put(primaryObjectResourceLinkage, dataNode);

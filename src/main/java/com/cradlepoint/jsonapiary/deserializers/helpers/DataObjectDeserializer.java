@@ -52,6 +52,9 @@ public class DataObjectDeserializer {
         }
 
         // Populate from Links //
+        if(linksNode != null) {
+            // TODO: do something here!
+        }
 
         // Populate from Meta //
         if(metaNode != null) {

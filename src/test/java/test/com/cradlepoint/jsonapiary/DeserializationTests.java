@@ -67,14 +67,4 @@ public class DeserializationTests {
         Assert.assertNotNull(simpleObjectJsonApiEnvelope);
     }
 
-    @Test
-    public void deserializationWithRelationshipsTest() throws Exception {
-        String json = "{\"data\":{\"id\":123,\"type\":\"SimpleObject\",\"attributes\":{\"objectAttribute\":\"logan's attribute!\"},\"relationships:" +
-                "{\"someOtherRelationship\":}}";
-
-        JavaType javaType = objectMapper.getTypeFactory().constructParametrizedType(JsonApiEnvelope.class, JsonApiEnvelope.class, SimpleObject.class);
-        JsonApiEnvelope<SimpleObject> simpleObjectJsonApiEnvelope = objectMapper.readValue(json, javaType);
-
-        Assert.assertNotNull(simpleObjectJsonApiEnvelope);
-    }
 }

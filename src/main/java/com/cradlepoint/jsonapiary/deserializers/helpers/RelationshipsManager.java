@@ -10,7 +10,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 public class RelationshipsManager {
@@ -51,6 +53,11 @@ public class RelationshipsManager {
             Map<ResourceLinkage, JsonNode> includedsSet,
             Map<ResourceLinkage, Object> includeds,
             DeserializationContext deserializationContext) throws IOException {
+
+        /////////////////
+        // BUCKLE. UP. //
+        /////////////////
+
         // Fetch the Relationship Fields on the Type //
         for(Field field : dataType.getDeclaredFields()) {
             if(field.isAnnotationPresent(JsonApiRelationship.class) && field.isAnnotationPresent(JsonProperty.class)) {
@@ -66,32 +73,68 @@ public class RelationshipsManager {
 
                 // Process based on Data, Link, or Meta //
                 if(relationshipNode.has(JsonApiKeyConstants.DATA_KEY)) {
-                    // Generate Relationship Linkage from the Data json //
-                    ResourceLinkage relationshipResourceLinkage = DeserializationUtilities.generateResourceLinkageFromNode(
-                            relationshipNode.get(JsonApiKeyConstants.DATA_KEY), jsonApiTypeMap);
+                    if(relationshipNode.get(JsonApiKeyConstants.DATA_KEY).isArray()) {
+                        // We're dealing with an Array... deserialize accordingly //
+                        List<Object> relationshipList = new ArrayList<Object>();
+                        JsonNode elementsNode = relationshipNode.get(JsonApiKeyConstants.DATA_KEY);
+                        for(JsonNode relationshipArrayElementNode : relationshipNode.get(JsonApiKeyConstants.DATA_KEY)) {
+                            // Generate the Resource Linkage for the Element //
+                            ResourceLinkage relationshipResourceLinkage = DeserializationUtilities.generateResourceLinkageFromNode(
+                                    relationshipArrayElementNode, jsonApiTypeMap);
 
-                    if(!includedsSet.containsKey(relationshipResourceLinkage)) {
-                        // Relationship was not included in the JSON.. leave it as null //
-                        continue;
-                    }
+                            if(!includedsSet.containsKey(relationshipResourceLinkage)) {
+                                // Relationship was not included in the JSON.. leave it as null //
+                                continue;
+                            }
 
-                    // Generate the Relationship Object //
-                    Object relationshipObject = processRelationshipData(
-                            relationshipKey,
-                            relationshipNode,
-                            jsonApiTypeMap,
-                            includedsSet,
-                            includeds,
-                            deserializationContext);
+                            // Build up the List of things //
+                            relationshipList.add(processRelationshipData(
+                                    relationshipKey,
+                                    relationshipArrayElementNode,
+                                    jsonApiTypeMap,
+                                    includedsSet,
+                                    includeds,
+                                    deserializationContext));
 
-                    // Set the Relationship Object on the Data object! //
-                    if(relationshipObject != null) {
+                            // Set the relationship on the Object! //
+                        }
+
+                        // Set the Relationship Object on the Data object! //
                         DeserializationUtilities.setObjectOnField(
                                 field,
-                                relationshipObject,
+                                relationshipList,
                                 dataObject);
+                        continue;
+                    } else {
+                        // We're dealing with a singe Object //
+
+                        // Generate Relationship Linkage from the Data json //
+                        ResourceLinkage relationshipResourceLinkage = DeserializationUtilities.generateResourceLinkageFromNode(
+                                relationshipNode.get(JsonApiKeyConstants.DATA_KEY), jsonApiTypeMap);
+
+                        if (!includedsSet.containsKey(relationshipResourceLinkage)) {
+                            // Relationship was not included in the JSON.. leave it as null //
+                            continue;
+                        }
+
+                        // Generate the Relationship Object //
+                        Object relationshipObject = processRelationshipData(
+                                relationshipKey,
+                                relationshipNode.get(JsonApiKeyConstants.DATA_KEY),
+                                jsonApiTypeMap,
+                                includedsSet,
+                                includeds,
+                                deserializationContext);
+
+                        // Set the Relationship Object on the Data object! //
+                        if (relationshipObject != null) {
+                            DeserializationUtilities.setObjectOnField(
+                                    field,
+                                    relationshipObject,
+                                    dataObject);
+                        }
+                        continue;
                     }
-                    continue;
                 }
 
                 if(relationshipNode.has(JsonApiKeyConstants.LINKS_KEY)) {
@@ -119,31 +162,66 @@ public class RelationshipsManager {
                     continue;
                 }
 
+                // Process based on Data, Link, or Meta //
                 if(relationshipNode.has(JsonApiKeyConstants.DATA_KEY)) {
-                    // Generate Relationship Linkage from the Data json //
-                    ResourceLinkage relationshipResourceLinkage = DeserializationUtilities.generateResourceLinkageFromNode(
-                            relationshipNode.get(JsonApiKeyConstants.DATA_KEY), jsonApiTypeMap);
+                    if(relationshipNode.get(JsonApiKeyConstants.DATA_KEY).isArray()) {
+                        // We're dealing with an Array... deserialize accordingly //
+                        List<Object> relationshipList = new ArrayList<Object>();
+                        JsonNode elementsNode = relationshipNode.get(JsonApiKeyConstants.DATA_KEY);
+                        for(JsonNode relationshipArrayElementNode : relationshipNode.get(JsonApiKeyConstants.DATA_KEY)) {
+                            // Generate the Resource Linkage for the Element //
+                            ResourceLinkage relationshipResourceLinkage = DeserializationUtilities.generateResourceLinkageFromNode(
+                                    relationshipArrayElementNode, jsonApiTypeMap);
 
-                    if(!includedsSet.containsKey(relationshipResourceLinkage)) {
-                        // Relationship was not included in the JSON.. leave it  as null //
+                            if(!includedsSet.containsKey(relationshipResourceLinkage)) {
+                                // Relationship was not included in the JSON.. leave it as null //
+                                continue;
+                            }
+
+                            // Build up the List of things //
+                            relationshipList.add(processRelationshipData(
+                                    relationshipKey,
+                                    relationshipArrayElementNode,
+                                    jsonApiTypeMap,
+                                    includedsSet,
+                                    includeds,
+                                    deserializationContext));
+
+                            // Set the relationship on the Object! //
+                        }
+
+                        // Set the Relationship Object on the Data object! //
+                        DeserializationUtilities.setObjectOnMethod(
+                                method,
+                                relationshipList,
+                                dataObject);
+                        continue;
+                    } else {
+                        // Generate Relationship Linkage from the Data json //
+                        ResourceLinkage relationshipResourceLinkage = DeserializationUtilities.generateResourceLinkageFromNode(
+                                relationshipNode.get(JsonApiKeyConstants.DATA_KEY), jsonApiTypeMap);
+
+                        if (!includedsSet.containsKey(relationshipResourceLinkage)) {
+                            // Relationship was not included in the JSON.. leave it  as null //
+                            continue;
+                        }
+
+                        // Generate the Relationship Object //
+                        Object relationshipObject = processRelationshipData(
+                                relationshipKey,
+                                relationshipNode.get(JsonApiKeyConstants.DATA_KEY),
+                                jsonApiTypeMap,
+                                includedsSet,
+                                includeds,
+                                deserializationContext);
+
+                        // Set the Relationship Object on the Data object! //
+                        DeserializationUtilities.setObjectOnMethod(
+                                method,
+                                relationshipObject,
+                                dataObject);
                         continue;
                     }
-
-                    // Generate the Relationship Object //
-                    Object relationshipObject = processRelationshipData(
-                            relationshipKey,
-                            relationshipNode,
-                            jsonApiTypeMap,
-                            includedsSet,
-                            includeds,
-                            deserializationContext);
-
-                    // Set the Relationship Object on the Data object! //
-                    DeserializationUtilities.setObjectOnMethod(
-                            method,
-                            relationshipObject,
-                            dataObject);
-                    continue;
                 }
 
                 if(relationshipNode.has(JsonApiKeyConstants.LINKS_KEY)) {
@@ -151,7 +229,7 @@ public class RelationshipsManager {
                 }
 
                 if(relationshipNode.has(JsonApiKeyConstants.META_DATA_KEY)) {
-
+                    // TODO: Meta needs wiring up!
                 }
             }
         }
@@ -227,9 +305,9 @@ public class RelationshipsManager {
             Map<ResourceLinkage, JsonNode> includedsSet,
             Map<ResourceLinkage, Object> includeds,
             DeserializationContext deserializationContext) throws IOException {
-        // Generate Relationship Linkage from the Data json //
+        // Generate Relationship Linkage from the json //
         ResourceLinkage relationshipResourceLinkage = DeserializationUtilities.generateResourceLinkageFromNode(
-                relationshipNode.get(JsonApiKeyConstants.DATA_KEY), jsonApiTypeMap);
+                relationshipNode, jsonApiTypeMap);
 
         // Generate the Relationship Object //
         Object relationshipObject = null;

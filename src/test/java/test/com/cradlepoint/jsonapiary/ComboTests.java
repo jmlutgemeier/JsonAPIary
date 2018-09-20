@@ -58,9 +58,15 @@ public class ComboTests {
 
     @Test
     public void complexRelationshipTest() throws Exception {
-        SimpleObject simpleObject = new SimpleObject();
+        SimpleNestedSubObject simpleNestedSubObject = new SimpleNestedSubObject();
+
         SimpleSubObject simpleSubObject = new SimpleSubObject();
+        simpleSubObject.setNestedThing(simpleNestedSubObject);
+
+        SimpleObject simpleObject = new SimpleObject();
         simpleObject.setThing2(simpleSubObject);
+
+        simpleNestedSubObject.setCir(simpleObject);
 
         // First Serialize //
         String serialization = objectMapper.writeValueAsString(new JsonApiEnvelope<SimpleObject>(simpleObject));
