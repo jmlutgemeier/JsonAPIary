@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class JsonApiSerializer {
+class JsonApiSerializer {
 
     ////////////////
     // Attributes //
@@ -63,17 +63,35 @@ public class JsonApiSerializer {
             SerializerProvider serializerProvider) throws IOException {
         Set<Object> includes = new HashSet<Object>();
 
-        if (object == null) {
-            jsonGenerator.writeNull();
-        } else if (isObjectJsonApiObject(object)) {
-            includes.addAll(
-                    this.serializeJsonApiObject(object, serializationContext, jsonGenerator, serializerProvider));
-        } else if (isObjectJsonApiObjectList(object)) {
-            includes.addAll(
-                    this.serializeJsonApiObjectList((List) object, serializationContext, jsonGenerator, serializerProvider));
-        } else {
-            JsonSerializer dataSerializer = serializerProvider.findValueSerializer(object.getClass());
-            dataSerializer.serialize(object, jsonGenerator, serializerProvider);
+        switch (serializationContext) {
+            case PRIMARY:
+            case RELATIONSHIP:
+            case RESOURCE_LINKAGE:
+            case LINK:
+                if (object == null) {
+                    jsonGenerator.writeNull();
+                } else if (isObjectJsonApiObject(object)) {
+                    includes.addAll(
+                            this.serializeJsonApiObject(object, serializationContext, jsonGenerator, serializerProvider));
+                } else if (isObjectJsonApiObjectList(object)) {
+                    includes.addAll(
+                            this.serializeJsonApiObjectList((List) object, serializationContext, jsonGenerator, serializerProvider));
+                } else {
+                    String issue = "In order to be serialized in the \"" + serializationContext.toString() + "\" JsonAPI context" +
+                            " object type " + object.getClass().getName() + " needs to be JsonAPIary annotated (@JsonApiType, " +
+                            "amongst others).";
+                    throw JsonMappingException.from(jsonGenerator, issue);
+                }
+                break;
+            case ATTRIBUTE:
+            case META:
+                JsonSerializer dataSerializer = serializerProvider.findValueSerializer(object.getClass());
+                dataSerializer.serialize(object, jsonGenerator, serializerProvider);
+                break;
+            default:
+                String issue = "Unexpected JsonAPI context: \"" + serializationContext.toString() + "\" when serializing " +
+                        object.getClass();
+                throw JsonMappingException.from(jsonGenerator, issue);
         }
 
         return includes;
@@ -245,7 +263,7 @@ public class JsonApiSerializer {
 
         // Serialize the Type //
         JsonApiType typeAnnotation = jsonApiObject.getClass().getAnnotation(JsonApiType.class);
-        if(typeAnnotation == null || typeAnnotation.value().isEmpty()) {
+        if(typeAnnotation == null || typeAnnotation.value() == null || typeAnnotation.value().isEmpty()) {
             jsonGenerator.writeStringField(JsonApiKeyConstants.TYPE_KEY, jsonApiObject.getClass().getSimpleName());
         } else {
             jsonGenerator.writeStringField(JsonApiKeyConstants.TYPE_KEY, typeAnnotation.value());

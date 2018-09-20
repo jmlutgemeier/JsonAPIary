@@ -1,9 +1,6 @@
 package test.com.cradlepoint.jsonapiary.pojos;
 
-import com.cradlepoint.jsonapiary.annotations.JsonApiId;
-import com.cradlepoint.jsonapiary.annotations.JsonApiLink;
-import com.cradlepoint.jsonapiary.annotations.JsonApiRelationship;
-import com.cradlepoint.jsonapiary.annotations.JsonApiType;
+import com.cradlepoint.jsonapiary.annotations.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -18,9 +15,13 @@ public class SimpleSubObject {
     @JsonProperty("ID")
     private String id;
 
-    @JsonApiLink
+    @JsonApiAttribute
     @JsonProperty("BAZ")
     private String baz;
+
+    @JsonApiRelationship
+    @JsonProperty("SINGLEnestedTHING")
+    private SimpleNestedSubObject nestedThing;
 
     @JsonApiRelationship
     @JsonProperty("NESTEDnestedNESTED")
@@ -53,6 +54,14 @@ public class SimpleSubObject {
 
     public void setBaz(String baz) {
         this.baz = baz;
+    }
+
+    public SimpleNestedSubObject getNestedThing() {
+        return this.nestedThing;
+    }
+
+    public void setNestedThing(SimpleNestedSubObject nestedThing) {
+        this.nestedThing = nestedThing;
     }
 
     public List<SimpleNestedSubObject> getNestedThings() {

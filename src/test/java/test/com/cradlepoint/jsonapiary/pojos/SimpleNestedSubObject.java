@@ -19,6 +19,7 @@ public class SimpleNestedSubObject {
     @JsonApiAttribute
     @JsonProperty("aNestedTHING")
     private String nestedThing;
+
     @JsonApiRelationship
     @JsonProperty("circular")
     private SimpleObject cir;
@@ -32,12 +33,6 @@ public class SimpleNestedSubObject {
     public Long getIid() {
         return this.iid;
     }
-    public SimpleObject getCir() {
-        return this.cir;
-    }
-    public void setCir(SimpleObject cir) {
-        this.cir = cir;
-    }
 
     public void setIid(Long iid) {
         this.iid = iid;
@@ -49,6 +44,14 @@ public class SimpleNestedSubObject {
 
     public void setNestedThing(String nestedThing) {
         this.nestedThing = nestedThing;
+    }
+
+    public SimpleObject getCir() {
+        return this.cir;
+    }
+
+    public void setCir(SimpleObject cir) {
+        this.cir = cir;
     }
 
 }

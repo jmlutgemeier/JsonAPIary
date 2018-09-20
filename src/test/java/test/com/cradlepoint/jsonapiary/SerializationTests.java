@@ -26,6 +26,10 @@ public class SerializationTests {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
+    ///////////
+    // Tests //
+    ///////////
+
     @Test
     public void passingTest() throws Exception {
         // Init Test Objects //
@@ -57,6 +61,11 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertFalse(json.isEmpty());
         System.out.println("\n\n\n" + json + "\n\n\n");
+    }
+
+    @Test
+    public void simpleRelationshipTest() {
+        SimpleObject simpleObject = new SimpleObject();
     }
 
 }

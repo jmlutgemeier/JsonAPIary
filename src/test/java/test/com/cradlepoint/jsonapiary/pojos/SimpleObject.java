@@ -19,7 +19,7 @@ public class SimpleObject {
 
     @JsonApiId
     @JsonProperty("objectId")
-    private Long id;
+    public Long id;
 
     @JsonApiAttribute
     @JsonProperty("objectAttribute")
