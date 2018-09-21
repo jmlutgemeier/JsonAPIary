@@ -7,6 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @JsonApiType
@@ -55,6 +56,28 @@ public class SimpleObject {
         thing = blah;
 
         thing2 = new SimpleSubObject();
+    }
+
+    ///////////////
+    // Overrides //
+    ///////////////
+
+    @Override
+    public boolean equals(Object object) {
+        if(object == null || !(object instanceof SimpleObject)) {
+            return false;
+        } else {
+            return (this.hashCode() == object.hashCode());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                id,
+                attribute,
+                thing,
+                thing2);
     }
 
     /////////////////////////

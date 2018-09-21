@@ -281,7 +281,7 @@ public class RelationshipsManager {
             MetaDeserializer.deserializeMetaInto(
                     resourceLinkage.getType(),
                     includedObject,
-                    attributesNode,
+                    metaNode,
                     deserializationContext);
         }
 

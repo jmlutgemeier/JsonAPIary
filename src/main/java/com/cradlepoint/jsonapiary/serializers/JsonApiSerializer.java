@@ -85,8 +85,12 @@ class JsonApiSerializer {
                 break;
             case ATTRIBUTE:
             case META:
-                JsonSerializer dataSerializer = serializerProvider.findValueSerializer(object.getClass());
-                dataSerializer.serialize(object, jsonGenerator, serializerProvider);
+                if(object == null) {
+                    jsonGenerator.writeNull();
+                } else {
+                    JsonSerializer dataSerializer = serializerProvider.findValueSerializer(object.getClass());
+                    dataSerializer.serialize(object, jsonGenerator, serializerProvider);
+                }
                 break;
             default:
                 String issue = "Unexpected JsonAPI context: \"" + serializationContext.toString() + "\" when serializing " +

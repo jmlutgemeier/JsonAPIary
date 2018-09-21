@@ -66,7 +66,7 @@ public class ComboTests {
         SimpleObject simpleObject = new SimpleObject();
         simpleObject.setThing2(simpleSubObject);
 
-        simpleNestedSubObject.setCir(simpleObject);
+        simpleNestedSubObject.setCir(new SimpleObject());
 
         // First Serialize //
         String serialization = objectMapper.writeValueAsString(new JsonApiEnvelope<SimpleObject>(simpleObject));
@@ -75,30 +75,7 @@ public class ComboTests {
         // Then try to Deserialize the output back! //
         JsonApiEnvelope<SimpleObject> deserializedObject = objectMapper.readValue(serialization, JsonApiEnvelope.class);
 
-        Assert.assertNotNull(deserializedObject);
-    }
-
-    @Test
-    public void circularRelationshipTest() throws Exception {
-        SimpleNestedSubObject simpleNestedSubObject = new SimpleNestedSubObject();
-
-        SimpleSubObject simpleSubObject = new SimpleSubObject();
-        simpleSubObject.setNestedThing(simpleNestedSubObject);
-        simpleSubObject.setNestedThings(null);
-
-        SimpleObject simpleObject = new SimpleObject();
-        simpleObject.setThing2(simpleSubObject);
-
-        simpleNestedSubObject.setCir(simpleObject);
-
-        // First Serialize //
-        String serialization = objectMapper.writeValueAsString(new JsonApiEnvelope<SimpleObject>(simpleObject));
-        System.out.println("\n\n" + serialization + "\n\n");
-
-        // Then try to Deserialize the output back! //
-        JsonApiEnvelope<SimpleObject> deserializedObject = objectMapper.readValue(serialization, JsonApiEnvelope.class);
-
-        Assert.assertNotNull(deserializedObject);
+        Assert.assertTrue(simpleObject.equals(deserializedObject.getData()));
     }
 
 }

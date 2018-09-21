@@ -6,10 +6,15 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @JsonApiType("TypeOverride")
 public class SimpleSubObject {
+
+    ////////////////
+    // Attributes //
+    ////////////////
 
     @JsonApiId
     @JsonProperty("ID")
@@ -39,6 +44,32 @@ public class SimpleSubObject {
             nestedThings.add(new SimpleNestedSubObject());
         }
     }
+
+    ///////////////
+    // Overrides //
+    ///////////////
+
+    @Override
+    public boolean equals(Object object) {
+        if(object == null || !(object instanceof SimpleSubObject)) {
+            return false;
+        } else {
+            return (this.hashCode() == object.hashCode());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                id,
+                baz,
+                nestedThing,
+                nestedThings);
+    }
+
+    /////////////////////////
+    // Getters and Setters //
+    /////////////////////////
 
     public String getId() {
         return this.id;
