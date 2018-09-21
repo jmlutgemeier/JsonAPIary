@@ -1,13 +1,15 @@
 package test.com.cradlepoint.jsonapiary.pojos;
 
-import com.cradlepoint.jsonapiary.annotations.*;
+import com.cradlepoint.jsonapiary.annotations.JsonApiAttribute;
+import com.cradlepoint.jsonapiary.annotations.JsonApiId;
+import com.cradlepoint.jsonapiary.annotations.JsonApiRelationship;
+import com.cradlepoint.jsonapiary.annotations.JsonApiType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 @JsonApiType("TypeOverride")
 public class SimpleSubObject {
@@ -35,12 +37,18 @@ public class SimpleSubObject {
     public SimpleSubObject() {
         id = RandomStringUtils.random(8);
 
-        Random random = new Random();
-        int numNested = random.nextInt(3) + 2;
+        baz = "...BAZ...! " + 0;
 
-        baz = "...BAZ...! " + numNested;
         nestedThings = new ArrayList<>();
-        for(int i1 = 0; i1 < numNested; i1++) {
+    }
+
+    public SimpleSubObject(int numNestedThings) {
+        id = RandomStringUtils.random(8);
+
+        baz = "...BAZ...! " + numNestedThings;
+
+        nestedThings = new ArrayList<>();
+        for(int i1 = 0; i1 < numNestedThings; i1++) {
             nestedThings.add(new SimpleNestedSubObject());
         }
     }

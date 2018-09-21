@@ -312,7 +312,7 @@ class JsonApiSerializer {
         // Are *ALL* Objects in the list JsonAPI? //
         List list = (List) object;
         if(list.isEmpty()) {
-            return false;
+            return true;
         }
 
         boolean jsonApi = true;

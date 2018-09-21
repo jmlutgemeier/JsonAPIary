@@ -23,8 +23,8 @@ public class SimpleNestedSubObject {
     private String nestedThing;
 
     @JsonApiMeta
-    @JsonProperty("circular")
-    private SimpleObject cir;
+    @JsonProperty("SOMEmetaSIMPLEobjectttttt")
+    private SimpleObject metaThing;
 
     /////////////////
     // Constructor //
@@ -54,7 +54,7 @@ public class SimpleNestedSubObject {
         return Objects.hash(
                 iid,
                 nestedThing,
-                cir);
+                metaThing);
     }
 
     /////////////////////////
@@ -77,12 +77,12 @@ public class SimpleNestedSubObject {
         this.nestedThing = nestedThing;
     }
 
-    public SimpleObject getCir() {
-        return this.cir;
+    public SimpleObject getMetaThing() {
+        return this.metaThing;
     }
 
-    public void setCir(SimpleObject cir) {
-        this.cir = cir;
+    public void setMetaThing(SimpleObject metaThing) {
+        this.metaThing = metaThing;
     }
 
 }

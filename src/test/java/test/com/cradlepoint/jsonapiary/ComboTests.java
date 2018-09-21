@@ -11,6 +11,8 @@ import test.com.cradlepoint.jsonapiary.pojos.SimpleNestedSubObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleSubObject;
 
+import java.util.Random;
+
 public class ComboTests {
 
     ////////////////
@@ -43,34 +45,47 @@ public class ComboTests {
     public void simpleRelationshipTest() throws Exception {
         SimpleObject simpleObject = new SimpleObject();
         SimpleSubObject simpleSubObject = new SimpleSubObject();
-        simpleSubObject.setNestedThings(null);
         simpleObject.setThing2(simpleSubObject);
 
         // First Serialize //
         String serialization = objectMapper.writeValueAsString(new JsonApiEnvelope<SimpleObject>(simpleObject));
-        System.out.println("\n\n" + serialization + "\n\n");
 
         // Then try to Deserialize the output back! //
         JsonApiEnvelope<SimpleObject> deserializedObject = objectMapper.readValue(serialization, JsonApiEnvelope.class);
 
-        Assert.assertNotNull(deserializedObject);
+        Assert.assertTrue(simpleObject.equals(deserializedObject.getData()));
+    }
+
+    @Test
+    public void emptyRelationshipListTest() throws Exception {
+        SimpleSubObject simpleSubObject = new SimpleSubObject();
+        SimpleNestedSubObject simpleNestedSubObject = new SimpleNestedSubObject();
+        simpleNestedSubObject.setMetaThing(new SimpleObject());
+        simpleSubObject.setNestedThing(simpleNestedSubObject);
+
+        // First Serialize //
+        String serialization = objectMapper.writeValueAsString(new JsonApiEnvelope<SimpleSubObject>(simpleSubObject));
+
+        // Then try to Deserialize the output back! //
+        JsonApiEnvelope<SimpleSubObject> deserializedObject = objectMapper.readValue(serialization, JsonApiEnvelope.class);
+
+        Assert.assertTrue(simpleSubObject.equals(deserializedObject.getData()));
     }
 
     @Test
     public void complexRelationshipTest() throws Exception {
         SimpleNestedSubObject simpleNestedSubObject = new SimpleNestedSubObject();
 
-        SimpleSubObject simpleSubObject = new SimpleSubObject();
+        SimpleSubObject simpleSubObject = new SimpleSubObject(8);
         simpleSubObject.setNestedThing(simpleNestedSubObject);
 
         SimpleObject simpleObject = new SimpleObject();
         simpleObject.setThing2(simpleSubObject);
 
-        simpleNestedSubObject.setCir(new SimpleObject());
+        simpleNestedSubObject.setMetaThing(new SimpleObject());
 
         // First Serialize //
         String serialization = objectMapper.writeValueAsString(new JsonApiEnvelope<SimpleObject>(simpleObject));
-        System.out.println("\n\n" + serialization + "\n\n");
 
         // Then try to Deserialize the output back! //
         JsonApiEnvelope<SimpleObject> deserializedObject = objectMapper.readValue(serialization, JsonApiEnvelope.class);
