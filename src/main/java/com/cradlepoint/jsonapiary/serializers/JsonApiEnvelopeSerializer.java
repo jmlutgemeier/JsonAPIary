@@ -93,31 +93,13 @@ public class JsonApiEnvelopeSerializer extends StdSerializer<JsonApiEnvelope> {
         jsonGenerator.writeEndObject();
     }
 
-    /////////////////////////
-    // Getters and Setters //
-    /////////////////////////
-
-    /**
-     * Fetch the JsonApiSerializer
-     * @return
-     */
-    public JsonApiSerializer getJsonApiSerializer() {
-        return this.jsonApiSerializer;
-    }
-
-    /**
-     * Set the JsonApiSerializer
-     * @param jsonApiSerializer
-     */
-    public void setJsonApiSerializer(JsonApiSerializer jsonApiSerializer) {
-        this.jsonApiSerializer = jsonApiSerializer;
-    }
-
     /////////////////////
     // Private Methods //
     /////////////////////
 
-    private Set<Object> determineNewNewIncludes(Set<Object> includes, Set<Object> newIncludes) {
+    private Set<Object> determineNewNewIncludes(
+            Set<Object> includes,
+            Set<Object> newIncludes) {
         Set<Object> newNewIncludes = new HashSet<Object>();
 
         for(Object newInclude : newIncludes) {

@@ -17,12 +17,6 @@ import java.util.Set;
 
 class JsonApiSerializer {
 
-    ////////////////
-    // Attributes //
-    ////////////////
-
-    private JsonApiAnnotationAnalyzer jsonApiAnnotationAnalyzer;
-
     /////////////////
     // Constructor //
     /////////////////
@@ -30,18 +24,7 @@ class JsonApiSerializer {
     /**
      * Default void constructor
      */
-    public JsonApiSerializer() {
-        jsonApiAnnotationAnalyzer = new JsonApiAnnotationAnalyzer();
-    }
-
-    /**
-     * Dependency-Injection constructor
-     * @param jsonApiAnnotationAnalyzer
-     */
-    public JsonApiSerializer(
-            JsonApiAnnotationAnalyzer jsonApiAnnotationAnalyzer) {
-        this.jsonApiAnnotationAnalyzer = jsonApiAnnotationAnalyzer;
-    }
+    public JsonApiSerializer() { }
 
     ////////////////////
     // Public Methods //
@@ -115,15 +98,15 @@ class JsonApiSerializer {
             SerializerProvider serializerProvider) throws IOException {
         // Round up the Attributes, Relationships, and MORE! //
         Map<String, Object> id =
-                jsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiId.class, jsonGenerator);
+                JsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiId.class, jsonGenerator);
         Map<String, Object> attributes =
-                jsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiAttribute.class, jsonGenerator);
+                JsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiAttribute.class, jsonGenerator);
         Map<String, Object> links =
-                jsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiLink.class, jsonGenerator);
+                JsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiLink.class, jsonGenerator);
         Map<String, Object> metas =
-                jsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiMeta.class, jsonGenerator);
+                JsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiMeta.class, jsonGenerator);
         Map<String, Object> relationships =
-                jsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiRelationship.class, jsonGenerator);
+                JsonApiAnnotationAnalyzer.fetchJsonsByAnnotation(jsonApiObject, JsonApiRelationship.class, jsonGenerator);
 
         Set<Object> includes = new HashSet<Object>();
 
@@ -314,11 +297,13 @@ class JsonApiSerializer {
         return includes;
     }
 
-    private boolean isObjectJsonApiObject(Object object) {
+    private boolean isObjectJsonApiObject(
+            Object object) {
         return object.getClass().isAnnotationPresent(JsonApiType.class);
     }
 
-    private boolean isObjectJsonApiObjectList(Object object) {
+    private boolean isObjectJsonApiObjectList(
+            Object object) {
         // Sanity Checks //
         if(object == null || !(object instanceof List)) {
             return false;

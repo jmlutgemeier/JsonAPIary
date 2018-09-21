@@ -28,9 +28,9 @@ public class JsonApiAnnotationAnalyzer {
     /////////////////
 
     /**
-     * Default void constructor
+     * Private void constructor
      */
-    public JsonApiAnnotationAnalyzer() { }
+    private JsonApiAnnotationAnalyzer() { }
 
     ////////////////////
     // Public Methods //
@@ -45,7 +45,7 @@ public class JsonApiAnnotationAnalyzer {
      * @return
      * @throws IOException
      */
-    public Map<String, Object> fetchJsonsByAnnotation(
+    public static Map<String, Object> fetchJsonsByAnnotation(
             Object jsonApiObject,
             Class<? extends Annotation> annotation,
             JsonGenerator jsonGenerator) throws IOException {
@@ -103,7 +103,7 @@ public class JsonApiAnnotationAnalyzer {
     // Private Methods //
     /////////////////////
 
-    private Object fetchFieldValue(
+    private static Object fetchFieldValue(
             Object jsonApiObject,
             Field field,
             JsonGenerator jsonGenerator) throws IOException {
@@ -125,11 +125,12 @@ public class JsonApiAnnotationAnalyzer {
         throw JsonMappingException.from(jsonGenerator, issue);
     }
 
-    private String generateGetterName(String fieldName) {
+    private static String generateGetterName(
+            String fieldName) {
         return "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
-    private Object fetchMethodValue(
+    private static Object fetchMethodValue(
             Object jsonApiObject,
             Method method,
             JsonGenerator jsonGenerator) throws IOException {
@@ -144,7 +145,9 @@ public class JsonApiAnnotationAnalyzer {
         throw JsonMappingException.from(jsonGenerator, issue);
     }
 
-    private boolean isOtherJsonApiAnnotationPresent(Annotation[] annotations, Class<? extends Annotation> annotation) {
+    private static boolean isOtherJsonApiAnnotationPresent(
+            Annotation[] annotations,
+            Class<? extends Annotation> annotation) {
         for(Annotation presentAnnotation : annotations) {
             if(!annotation.equals(presentAnnotation)) {
                 if(presentAnnotation.annotationType().isAnnotationPresent(JsonApiProperty.class)) {
