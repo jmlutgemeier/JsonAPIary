@@ -1,9 +1,6 @@
 package com.cradlepoint.jsonapiary.deserializers;
 
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
-import com.cradlepoint.jsonapiary.deserializers.helpers.DataObjectDeserializer;
-import com.cradlepoint.jsonapiary.deserializers.helpers.DeserializationUtilities;
-import com.cradlepoint.jsonapiary.deserializers.helpers.RelationshipsManager;
 import com.cradlepoint.jsonapiary.envelopes.JsonApiEnvelope;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,7 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class JsonApiEnvelopeDeserializer extends StdDeserializer<JsonApiEnvelope> {
@@ -67,57 +65,24 @@ public class JsonApiEnvelopeDeserializer extends StdDeserializer<JsonApiEnvelope
         JsonNode includedNode = rootNode.get(JsonApiKeyConstants.INCLUDED_KEY);
         JsonNode metaNode = rootNode.get(JsonApiKeyConstants.META_DATA_KEY);
 
-        // Generate the Set of Includeds //
-        Map<ResourceLinkage, JsonNode> includedsSet = RelationshipsManager.generateSetOfIncludeds(
+        // Bootstrap a new JsonApiObjectManager //
+        JsonApiObjectManager jsonApiObjectManager = new JsonApiObjectManager(
+                dataNode,
                 includedNode,
                 jsonApiTypeMap);
-        Map<ResourceLinkage, Object> includeds = new Hashtable<ResourceLinkage, Object>();
 
-        // Process the "data" block //
+        // Loop through processing and collecting all the primary object(s) //
         Object dataObject = null;
+        List<ResourceLinkage> dataObjectResourceLinkages = jsonApiObjectManager.getPrimaryObjects();
         if(dataNode.isArray()) {
-            // Add "primary" list contents into the includeds, in case of circular references... //
-            for(JsonNode primaryDataArrayElement : dataNode) {
-                ResourceLinkage primaryArrayElementResourceLinkage =
-                        DeserializationUtilities.generateResourceLinkageFromNode(primaryDataArrayElement, jsonApiTypeMap);
-                includedsSet.put(primaryArrayElementResourceLinkage, primaryDataArrayElement);
-
-                dataObject = DeserializationUtilities.generateObjectFromNode(primaryDataArrayElement, jsonApiTypeMap);
-                includeds.put(primaryArrayElementResourceLinkage, dataObject);
+            List<Object> dataObjects = new ArrayList<Object>();
+            for(ResourceLinkage dataObjectResourceLinkage : dataObjectResourceLinkages) {
+                dataObjects.add(
+                        jsonApiObjectManager.lazyFetchObject(dataObjectResourceLinkage, deserializationContext));
             }
-
-            // Deserialize the Things! //
-            for(JsonNode primaryDataArrayElement : dataNode) {
-                ResourceLinkage primaryArrayElementResourceLinkage =
-                        DeserializationUtilities.generateResourceLinkageFromNode(primaryDataArrayElement, jsonApiTypeMap);
-
-                DataObjectDeserializer.deserializeDataObject(
-                        primaryArrayElementResourceLinkage.getType(),
-                        includeds.get(primaryArrayElementResourceLinkage),
-                        primaryDataArrayElement,
-                        jsonApiTypeMap,
-                        includedsSet,
-                        includeds,
-                        deserializationContext);
-            }
+            dataObject = dataObjects;
         } else {
-            // Add the "primary" object to the includeds... //
-            ResourceLinkage primaryObjectResourceLinkage =
-                    DeserializationUtilities.generateResourceLinkageFromNode(dataNode, jsonApiTypeMap);
-            includedsSet.put(primaryObjectResourceLinkage, dataNode);
-
-            dataObject = DeserializationUtilities.generateObjectFromNode(dataNode, jsonApiTypeMap);
-            includeds.put(primaryObjectResourceLinkage, dataObject);
-
-            // Deserialize the thing! //
-            DataObjectDeserializer.deserializeDataObject(
-                    dataObject.getClass(),
-                    dataObject,
-                    dataNode,
-                    jsonApiTypeMap,
-                    includedsSet,
-                    includeds,
-                    deserializationContext);
+            dataObject = jsonApiObjectManager.lazyFetchObject(dataObjectResourceLinkages.get(0), deserializationContext);
         }
 
         return new JsonApiEnvelope(dataObject);

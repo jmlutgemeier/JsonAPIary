@@ -23,24 +23,22 @@ public class MetaDeserializer {
 
     /**
      *  Deserializes the attributes into the passed in object
-     * @param dataType
-     * @param dataObject
+     * @param object
      * @param metaNode
      * @param deserializationContext
      */
     public static void deserializeMetaInto(
-            Class dataType,
-            Object dataObject,
+            Object object,
             JsonNode metaNode,
             DeserializationContext deserializationContext) throws IOException {
         // Fetch the "default" deserializer for the type from Jackson //
-        JavaType javaDataType = deserializationContext.getTypeFactory().constructType(dataType);
+        JavaType javaDataType = deserializationContext.getTypeFactory().constructType(object.getClass());
         JsonDeserializer dataTypeDeserializer = deserializationContext.findRootValueDeserializer(javaDataType);
 
         // Deserialize from the Meta Nodes //
         JsonParser attributesParser = new JsonFactory().createParser(metaNode.toString());
         attributesParser.nextToken();
-        dataTypeDeserializer.deserialize(attributesParser, deserializationContext, dataObject);
+        dataTypeDeserializer.deserialize(attributesParser, deserializationContext, object);
     }
 
 }

@@ -24,6 +24,12 @@ public class DeserializationUtilities {
     // Public Methods //
     ////////////////////
 
+    /**
+     * Creates a ResourceLinkage from the contents of the passed in json
+     * @param jsonNode
+     * @param jsonApiTypeMap
+     * @return
+     */
     public static ResourceLinkage generateResourceLinkageFromNode(
             JsonNode jsonNode,
             Map<String, Class> jsonApiTypeMap) {
@@ -53,6 +59,11 @@ public class DeserializationUtilities {
         return object;
     }
 
+    /**
+     * Returns the corresponding json key for the passed in Field
+     * @param field
+     * @return
+     */
     public static String getFieldJsonKey(Field field) {
         JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
         if(jsonProperty == null || jsonProperty.value() == null || jsonProperty.value().isEmpty()) {
@@ -62,6 +73,11 @@ public class DeserializationUtilities {
         }
     }
 
+    /**
+     * Returns the corresponding json key for the passed in Method
+     * @param method
+     * @return
+     */
     public static String getMethodJsonKey(Method method) {
         JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
         if(jsonProperty == null || jsonProperty.value() == null || jsonProperty.value().isEmpty()) {
@@ -73,6 +89,12 @@ public class DeserializationUtilities {
         }
     }
 
+    /**
+     * Sets the Passed in Field, on the passed in Object, to the passed in Value(/Object)
+     * @param field
+     * @param fieldValue
+     * @param onto
+     */
     public static void setObjectOnField(
             Field field,
             Object fieldValue,
@@ -117,6 +139,13 @@ public class DeserializationUtilities {
         }
     }
 
+    /**
+     * Invokes the Passed in ("setter") Method, on the passed in Object, with the passed in Value(/Object) as the
+     * argument.
+     * @param method
+     * @param fieldValue
+     * @param onto
+     */
     public static void setObjectOnMethod(
             Method method,
             Object fieldValue,
@@ -275,4 +304,5 @@ public class DeserializationUtilities {
             throw new IllegalStateException(issue);
         }
     }
+
 }
