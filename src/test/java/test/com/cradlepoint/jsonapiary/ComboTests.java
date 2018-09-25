@@ -11,8 +11,6 @@ import test.com.cradlepoint.jsonapiary.pojos.SimpleNestedSubObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleSubObject;
 
-import java.util.Random;
-
 public class ComboTests {
 
     ////////////////

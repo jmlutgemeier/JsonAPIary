@@ -12,6 +12,9 @@ import test.com.cradlepoint.jsonapiary.pojos.SimpleObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleSubObject;
 import test.com.cradlepoint.jsonapiary.pojos.SingleLinkNode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SerializationTests {
 
     ////////////////
@@ -292,6 +295,140 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"meta\" : {\n" +
                 "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
+                "    }\n" +
+                "  } ]\n" +
+                "}"));
+    }
+
+    @Test
+    public void ListSerializationTest() throws Exception {
+        // Init Test Object //
+        List<SimpleObject> simpleObjectList = new ArrayList<SimpleObject>();
+        for(int i1 = 0; i1 < 8; i1++) {
+            SimpleObject simpleObject = new SimpleObject();
+            simpleObject.setId(Long.valueOf(i1));
+            simpleObject.setAttribute("object number " + i1);
+            simpleObjectList.add(simpleObject);
+        }
+
+        JsonApiEnvelope<List<SimpleObject>> envelope = new JsonApiEnvelope<List<SimpleObject>>(simpleObjectList);
+
+        // Serialize and Validate //
+        String json = objectMapper.writeValueAsString(envelope);
+
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : [ {\n" +
+                "    \"id\" : 0,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 0\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 1,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 1\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 2,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 2\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 3,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 3\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 4,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 4\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 5,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 5\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 6,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 6\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 7,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"object number 7\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
                 "    }\n" +
                 "  } ]\n" +
                 "}"));
