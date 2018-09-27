@@ -485,7 +485,6 @@ public class SerializationTests {
 
         // Serialize and verify //
         String json = objectMapper.writeValueAsString(jsonApiEnvelope);
-        System.out.println("\n\n\n" + json + "\n\n\n");
 
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
