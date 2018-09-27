@@ -1,10 +1,14 @@
 package com.cradlepoint.jsonapiary.envelopes;
 
 import com.cradlepoint.jsonapiary.annotations.JsonApiType;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.net.URL;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class JsonApiEnvelope<T> {
 
@@ -18,6 +22,18 @@ public class JsonApiEnvelope<T> {
     @JsonProperty(JsonApiKeyConstants.DATA_KEY)
     private T data;
 
+    /**
+     * Top-level links
+     */
+    @JsonProperty(JsonApiKeyConstants.LINKS_KEY)
+    private Map<String, URL> links;
+
+    /**
+     * Top-level meta-data
+     */
+    @JsonProperty(JsonApiKeyConstants.META_DATA_KEY)
+    private Map<String, String> meta;
+
     /////////////////
     // Constructor //
     /////////////////
@@ -25,7 +41,11 @@ public class JsonApiEnvelope<T> {
     /**
      * Default void constructor
      */
-    public JsonApiEnvelope() { }
+    public JsonApiEnvelope() {
+        data = null;
+        links = new Hashtable<String, URL>();
+        meta = new Hashtable<String, String>();
+    }
 
     /**
      * Constructor
@@ -33,6 +53,8 @@ public class JsonApiEnvelope<T> {
     public JsonApiEnvelope(T data) {
         validateTypeJsonAPIAnnotated(data);
         this.data = data;
+        links = new Hashtable<String, URL>();
+        meta = new Hashtable<String, String>();
     }
 
     /////////////////////////
@@ -54,6 +76,44 @@ public class JsonApiEnvelope<T> {
     public void setData(T data) {
         validateTypeJsonAPIAnnotated(data);
         this.data = data;
+    }
+
+    /**
+     * Fetch the top-level links
+     * @return
+     */
+    public Map<String, URL> getLinks() {
+        return this.links;
+    }
+
+    /**
+     * Fetch the top-level meta-data
+     * @return
+     */
+    public Map<String, String> getMeta() {
+        return this.meta;
+    }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    /**
+     * Adds a link to the top-level object links
+     * @param key
+     * @param url
+     */
+    public void addLink(String key, URL url) {
+        links.put(key, url);
+    }
+
+    /**
+     * Adds key-value pair to the top-level meta-data
+     * @param key
+     * @param value
+     */
+    public void addMeta(String key, String value) {
+        meta.put(key, value);
     }
 
     /////////////////////
@@ -88,6 +148,27 @@ public class JsonApiEnvelope<T> {
                     " Expected type to have @JsonApiType annotation";
             throw new IllegalArgumentException(issue);
         }
+    }
+
+    ///////////////
+    // Overrides //
+    ///////////////
+
+    @Override
+    public boolean equals(Object object) {
+        if(object == null || !(object instanceof JsonApiEnvelope)){
+            return false;
+        } else {
+            return (this.hashCode() == object.hashCode());
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                data,
+                links,
+                meta);
     }
 
 }

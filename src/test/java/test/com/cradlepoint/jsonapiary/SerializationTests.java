@@ -12,6 +12,7 @@ import test.com.cradlepoint.jsonapiary.pojos.SimpleObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleSubObject;
 import test.com.cradlepoint.jsonapiary.pojos.SingleLinkNode;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -431,6 +432,82 @@ public class SerializationTests {
                 "      \"someOtherRelationship\" : null\n" +
                 "    }\n" +
                 "  } ]\n" +
+                "}"));
+    }
+
+    @Test
+    public void topLevelLinksTest() throws Exception{
+        // Init test object //
+        SimpleObject simpleObject = new SimpleObject();
+        simpleObject.setId(666l);
+        simpleObject.setAttribute("the attribute of the beast.");
+        JsonApiEnvelope<SimpleObject> jsonApiEnvelope = new JsonApiEnvelope<SimpleObject>(simpleObject);
+        jsonApiEnvelope.addLink("google", new URL("http://www.google.com"));
+        jsonApiEnvelope.addLink("what is jsonapi", new URL("https://www.google.com/search?q=jsonapi&ie=utf-8&oe=utf-8"));
+
+        // Serialize and verify //
+        String json = objectMapper.writeValueAsString(jsonApiEnvelope);
+
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : {\n" +
+                "    \"id\" : 666,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"the attribute of the beast.\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"links\" : {\n" +
+                "    \"google\" : \"http://www.google.com\",\n" +
+                "    \"what is jsonapi\" : \"https://www.google.com/search?q=jsonapi&ie=utf-8&oe=utf-8\"\n" +
+                "  }\n" +
+                "}"));
+    }
+
+    @Test
+    public void topLevelMetaTest() throws Exception {
+        // Init test objects //
+        SimpleObject simpleObject1 = new SimpleObject();
+        simpleObject1.setId(1l);
+        simpleObject1.setAttribute("O.N.E.");
+        JsonApiEnvelope<SimpleObject> jsonApiEnvelope = new JsonApiEnvelope<SimpleObject>(simpleObject1);
+
+        jsonApiEnvelope.addMeta("top-LEVEL-meta-THING", "this is a fancy thing!");
+        jsonApiEnvelope.addMeta("helllllo", "good! buy!");
+
+        // Serialize and verify //
+        String json = objectMapper.writeValueAsString(jsonApiEnvelope);
+        System.out.println("\n\n\n" + json + "\n\n\n");
+
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : {\n" +
+                "    \"id\" : 1,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"O.N.E.\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someRelationship\" : null,\n" +
+                "      \"someOtherRelationship\" : null\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"meta\" : {\n" +
+                "    \"helllllo\" : \"good! buy!\",\n" +
+                "    \"top-LEVEL-meta-THING\" : \"this is a fancy thing!\"\n" +
+                "  }\n" +
                 "}"));
     }
 

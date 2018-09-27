@@ -1,6 +1,7 @@
 package com.cradlepoint.jsonapiary.deserializers;
 
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
+import com.cradlepoint.jsonapiary.deserializers.helpers.LinksDeserializer;
 import com.cradlepoint.jsonapiary.envelopes.JsonApiEnvelope;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +65,7 @@ public class JsonApiEnvelopeDeserializer extends StdDeserializer<JsonApiEnvelope
         // Fetch the Data, Included, and Meta nodes... //
         JsonNode dataNode = rootNode.get(JsonApiKeyConstants.DATA_KEY);
         JsonNode includedNode = rootNode.get(JsonApiKeyConstants.INCLUDED_KEY);
+        JsonNode linksNode = rootNode.get(JsonApiKeyConstants.LINKS_KEY);
         JsonNode metaNode = rootNode.get(JsonApiKeyConstants.META_DATA_KEY);
 
         // Bootstrap a new JsonApiObjectManager //
@@ -85,7 +88,29 @@ public class JsonApiEnvelopeDeserializer extends StdDeserializer<JsonApiEnvelope
             dataObject = jsonApiObjectManager.lazyFetchObject(dataObjectResourceLinkages.get(0), deserializationContext);
         }
 
-        return new JsonApiEnvelope(dataObject);
+        // Construct the Envelop from deserialized data //
+        JsonApiEnvelope jsonApiEnvelope = new JsonApiEnvelope(dataObject);
+
+        // Deserialize the top-level links //
+        if(linksNode != null && !linksNode.isNull()) {
+            LinksDeserializer.deserializeLinksInto(
+                    jsonApiEnvelope,
+                    linksNode);
+        }
+
+        // Deserialize the top-level meta //
+        if(metaNode != null && !metaNode.isNull()) {
+            Iterator<String> metaFields = metaNode.fieldNames();
+            while(metaFields.hasNext()) {
+                String field = metaFields.next();
+                String value = metaNode.get(field).textValue();
+                if(field != null && !field.isEmpty() && value != null) {
+                    jsonApiEnvelope.addMeta(field, value);
+                }
+            }
+        }
+
+        return jsonApiEnvelope;
     }
 
 }

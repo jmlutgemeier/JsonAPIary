@@ -11,6 +11,8 @@ import test.com.cradlepoint.jsonapiary.pojos.SimpleNestedSubObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleObject;
 import test.com.cradlepoint.jsonapiary.pojos.SimpleSubObject;
 
+import java.net.URL;
+
 public class ComboTests {
 
     ////////////////
@@ -89,6 +91,31 @@ public class ComboTests {
         JsonApiEnvelope<SimpleObject> deserializedObject = objectMapper.readValue(serialization, JsonApiEnvelope.class);
 
         Assert.assertTrue(simpleObject.equals(deserializedObject.getData()));
+    }
+
+    @Test
+    public void topLevelLinksAndMetaTest() throws Exception {
+        // Init test objects //
+        SimpleObject simpleObject1 = new SimpleObject();
+        simpleObject1.setId(1l);
+        simpleObject1.setAttribute("number: O.N.E.");
+        JsonApiEnvelope<SimpleObject> jsonApiEnvelope = new JsonApiEnvelope<SimpleObject>(simpleObject1);
+
+        jsonApiEnvelope.addMeta("top-LEVEL-meta-THING", "this is a fancy thing!");
+        jsonApiEnvelope.addMeta("helllllo", "good! buy!");
+
+        jsonApiEnvelope.addLink("google", new URL("http://www.google.com"));
+        jsonApiEnvelope.addLink("jsonapi", new URL("http://jsonapi.org/"));
+
+        // First, serialize //
+        String json = objectMapper.writeValueAsString(jsonApiEnvelope);
+        Assert.assertNotNull(json);
+
+        // Then, try to serialize back into an equal Object //
+        JsonApiEnvelope<SimpleObject> deserializedObject = objectMapper.readValue(json, JsonApiEnvelope.class);
+        Assert.assertNotNull(deserializedObject);
+
+        Assert.assertTrue(jsonApiEnvelope.equals(deserializedObject));
     }
 
 }

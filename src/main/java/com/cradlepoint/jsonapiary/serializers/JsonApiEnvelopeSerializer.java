@@ -1,14 +1,16 @@
 package com.cradlepoint.jsonapiary.serializers;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
 import com.cradlepoint.jsonapiary.enums.JsonApiObjectContext;
 import com.cradlepoint.jsonapiary.envelopes.JsonApiEnvelope;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class JsonApiEnvelopeSerializer extends StdSerializer<JsonApiEnvelope> {
@@ -88,6 +90,30 @@ public class JsonApiEnvelopeSerializer extends StdSerializer<JsonApiEnvelope> {
             }
 
             jsonGenerator.writeEndArray();
+        }
+
+        // Write out the top-level Links //
+        if(!jsonApiEnvelope.getLinks().isEmpty()) {
+            Map<String, URL> links = jsonApiEnvelope.getLinks();
+
+            jsonGenerator.writeFieldName(JsonApiKeyConstants.LINKS_KEY);
+            jsonGenerator.writeStartObject();
+            for(String key : links.keySet()) {
+                jsonGenerator.writeStringField(key, links.get(key).toString());
+            }
+            jsonGenerator.writeEndObject();
+        }
+
+        // Write out the top-level Meta //
+        if(!jsonApiEnvelope.getMeta().isEmpty()) {
+            Map<String, String> meta = jsonApiEnvelope.getMeta();
+
+            jsonGenerator.writeFieldName(JsonApiKeyConstants.META_DATA_KEY);
+            jsonGenerator.writeStartObject();
+            for(String key : meta.keySet()) {
+                jsonGenerator.writeStringField(key, meta.get(key));
+            }
+            jsonGenerator.writeEndObject();
         }
 
         jsonGenerator.writeEndObject();

@@ -1,13 +1,13 @@
 package com.cradlepoint.jsonapiary.serializers;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.cradlepoint.jsonapiary.annotations.*;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
 import com.cradlepoint.jsonapiary.enums.JsonApiObjectContext;
 import com.cradlepoint.jsonapiary.serializers.helpers.JsonApiAnnotationAnalyzer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 import java.util.HashSet;

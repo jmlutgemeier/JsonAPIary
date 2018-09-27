@@ -15,6 +15,9 @@ public class MetaDeserializer {
     // Constructor //
     /////////////////
 
+    /**
+     * private void constructor
+     */
     private MetaDeserializer() { }
 
     ////////////////////
