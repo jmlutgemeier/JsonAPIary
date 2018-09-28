@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Assert;
 import org.junit.Test;
-import test.com.cradlepoint.jsonapiary.pojos.SimpleNestedSubObject;
-import test.com.cradlepoint.jsonapiary.pojos.SimpleObject;
-import test.com.cradlepoint.jsonapiary.pojos.SimpleSubObject;
+import test.com.cradlepoint.jsonapiary.pojos.*;
 
 import java.net.URL;
 
@@ -29,7 +27,10 @@ public class ComboTests {
         JsonApiModule jsonApiModule = new JsonApiModule(
                 SimpleObject.class,
                 SimpleSubObject.class,
-                SimpleNestedSubObject.class);
+                SimpleNestedSubObject.class,
+                SingleLinkNode.class,
+                ABaseClass.class,
+                AChildClass.class);
 
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -111,10 +112,33 @@ public class ComboTests {
         String json = objectMapper.writeValueAsString(jsonApiEnvelope);
         Assert.assertNotNull(json);
 
-        // Then, try to serialize back into an equal Object //
+        // Then, try to deserialize back into an equal Object //
         JsonApiEnvelope<SimpleObject> deserializedObject = objectMapper.readValue(json, JsonApiEnvelope.class);
         Assert.assertNotNull(deserializedObject);
+        Assert.assertTrue(jsonApiEnvelope.equals(deserializedObject));
+    }
 
+    @Test
+    public void inheritanceTest() throws Exception {
+        // Init Test Objects //
+        SimpleObject simpleObject = new SimpleObject();
+        simpleObject.setId(314l);
+        simpleObject.setAttribute("pi");
+
+        AChildClass aChildClass = new AChildClass();
+        aChildClass.setWhoAmI("my(ComboTests)Id");
+        aChildClass.setWhatDoIHave(simpleObject);
+        aChildClass.setWhaz("this is (ComboTests) whaz!");
+        aChildClass.setMetaInt(210);
+        JsonApiEnvelope<AChildClass> jsonApiEnvelope = new JsonApiEnvelope<AChildClass>(aChildClass);
+
+        // First, serialize //
+        String json = objectMapper.writeValueAsString(jsonApiEnvelope);
+        Assert.assertNotNull(json);
+
+        // Then, attempt to deserialize and verify //
+        JsonApiEnvelope<AChildClass> deserializedObject = objectMapper.readValue(json, JsonApiEnvelope.class);
+        Assert.assertNotNull(deserializedObject);
         Assert.assertTrue(jsonApiEnvelope.equals(deserializedObject));
     }
 

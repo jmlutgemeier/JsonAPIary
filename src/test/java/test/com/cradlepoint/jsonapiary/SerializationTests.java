@@ -7,10 +7,7 @@ import com.cradlepoint.jsonapiary.JsonApiModule;
 import com.cradlepoint.jsonapiary.envelopes.JsonApiEnvelope;
 import org.junit.Assert;
 import org.junit.Test;
-import test.com.cradlepoint.jsonapiary.pojos.SimpleNestedSubObject;
-import test.com.cradlepoint.jsonapiary.pojos.SimpleObject;
-import test.com.cradlepoint.jsonapiary.pojos.SimpleSubObject;
-import test.com.cradlepoint.jsonapiary.pojos.SingleLinkNode;
+import test.com.cradlepoint.jsonapiary.pojos.*;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +30,9 @@ public class SerializationTests {
                 SimpleObject.class,
                 SimpleSubObject.class,
                 SimpleNestedSubObject.class,
-                SingleLinkNode.class);
+                SingleLinkNode.class,
+                ABaseClass.class,
+                AChildClass.class);
 
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -62,7 +61,7 @@ public class SerializationTests {
 
         // Serialize //
         String json = objectMapper.writeValueAsString(new JsonApiEnvelope<SingleLinkNode>(singleLinkNode1));
-
+        Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
                 "    \"id\" : 1.0,\n" +
@@ -138,7 +137,7 @@ public class SerializationTests {
 
         // First Serialize //
         String json = objectMapper.writeValueAsString(new JsonApiEnvelope<SimpleObject>(simpleObject));
-
+        Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
                 "    \"id\" : 9876,\n" +
@@ -151,7 +150,6 @@ public class SerializationTests {
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
                 "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
                 "      \"someOtherRelationship\" : {\n" +
                 "        \"data\" : {\n" +
                 "          \"id\" : \"AnID\",\n" +
@@ -231,72 +229,56 @@ public class SerializationTests {
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #2\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 2,\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #3\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 3,\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #4\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 4,\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #5\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 5,\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #6\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 6,\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #7\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 7,\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #8\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 8,\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #9\"\n" +
                 "    },\n" +
-                "    \"meta\" : {\n" +
-                "      \"SOMEmetaSIMPLEobjectttttt\" : null\n" +
-                "    }\n" +
+                "    \"meta\" : { }\n" +
                 "  } ]\n" +
                 "}"));
     }
@@ -316,7 +298,6 @@ public class SerializationTests {
 
         // Serialize and Validate //
         String json = objectMapper.writeValueAsString(envelope);
-
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : [ {\n" +
@@ -329,10 +310,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 1,\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
@@ -343,10 +321,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 2,\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
@@ -357,10 +332,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 3,\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
@@ -371,10 +343,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 4,\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
@@ -385,10 +354,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 5,\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
@@ -399,10 +365,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 6,\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
@@ -413,10 +376,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  }, {\n" +
                 "    \"id\" : 7,\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
@@ -427,10 +387,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  } ]\n" +
                 "}"));
     }
@@ -460,10 +417,7 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  },\n" +
                 "  \"links\" : {\n" +
                 "    \"google\" : \"http://www.google.com\",\n" +
@@ -485,7 +439,6 @@ public class SerializationTests {
 
         // Serialize and verify //
         String json = objectMapper.writeValueAsString(jsonApiEnvelope);
-
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
@@ -498,15 +451,67 @@ public class SerializationTests {
                 "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
                 "      \"objectBlah\" : \"blah!\"\n" +
                 "    },\n" +
-                "    \"relationships\" : {\n" +
-                "      \"someRelationship\" : null,\n" +
-                "      \"someOtherRelationship\" : null\n" +
-                "    }\n" +
+                "    \"relationships\" : { }\n" +
                 "  },\n" +
                 "  \"meta\" : {\n" +
                 "    \"helllllo\" : \"good! buy!\",\n" +
                 "    \"top-LEVEL-meta-THING\" : \"this is a fancy thing!\"\n" +
                 "  }\n" +
+                "}"));
+    }
+
+    @Test
+    public void inheritanceTest() throws Exception {
+        // Init Test Objects //
+        SimpleObject simpleObject = new SimpleObject();
+        simpleObject.setId(314l);
+        simpleObject.setAttribute("pi");
+
+        AChildClass aChildClass = new AChildClass();
+        aChildClass.setWhoAmI("myId");
+        aChildClass.setWhatDoIHave(simpleObject);
+        aChildClass.setWhaz("this is whaz!");
+        aChildClass.setMetaInt(21);
+
+        // Serialize and Verify //
+        String json = objectMapper.writeValueAsString(new JsonApiEnvelope<AChildClass>(aChildClass));
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : {\n" +
+                "    \"id\" : \"myId\",\n" +
+                "    \"type\" : \"AcHiLdClAsS\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"metaInt\" : 21,\n" +
+                "      \"whaz\" : \"this is whaz!\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"jsonApiOverride\" : \"what is a whaz?\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"whatDoIHave\" : {\n" +
+                "        \"data\" : {\n" +
+                "          \"id\" : 314,\n" +
+                "          \"type\" : \"SimpleObject\"\n" +
+                "        },\n" +
+                "        \"meta\" : {\n" +
+                "          \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "          \"objectBlah\" : \"blah!\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"included\" : [ {\n" +
+                "    \"id\" : 314,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"pi\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : { }\n" +
+                "  } ]\n" +
                 "}"));
     }
 

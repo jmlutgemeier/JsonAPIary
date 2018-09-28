@@ -246,6 +246,10 @@ class JsonApiSerializer {
             Object value = idMap.get(idMap.keySet().toArray()[0]);
             JsonSerializer dataSerializer = serializerProvider.findValueSerializer(value.getClass());
             dataSerializer.serialize(value, jsonGenerator, serializerProvider);
+        } else {
+            String issue = "Type (" + jsonApiObject.getClass().getName() + ") does not contain a JsonAPI id! " +
+                    "An attribute must be annotated with @JsonApiId!";
+            throw new IllegalArgumentException(issue);
         }
 
         // Serialize the Type //
@@ -285,10 +289,12 @@ class JsonApiSerializer {
             jsonGenerator.writeStartObject();
 
             for (String key : map.keySet()) {
-                jsonGenerator.writeFieldName(key);
                 Object value = map.get(key);
-                includes.addAll(
-                        this.serializeRandomObject(value, serializationContext, jsonGenerator, serializerProvider));
+                if(value != null) {
+                    jsonGenerator.writeFieldName(key);
+                    includes.addAll(
+                            this.serializeRandomObject(value, serializationContext, jsonGenerator, serializerProvider));
+                }
             }
 
             jsonGenerator.writeEndObject();

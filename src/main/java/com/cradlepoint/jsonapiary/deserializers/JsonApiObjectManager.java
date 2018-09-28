@@ -200,8 +200,17 @@ class JsonApiObjectManager {
         /////////////////
 
         // Fetch the Relationship Fields on the Type //
-        for(Field field : object.getClass().getDeclaredFields()) {
-            if(field.isAnnotationPresent(JsonApiRelationship.class) && field.isAnnotationPresent(JsonProperty.class)) {
+        List<Field> completeFields = new ArrayList<Field>();
+        Class type = object.getClass();
+        while(type != null) {
+            for(Field field : type.getDeclaredFields()) {
+                completeFields.add(field);
+            }
+            type = type.getSuperclass();
+        }
+
+        for(Field field : completeFields) {
+            if(field.isAnnotationPresent(JsonApiRelationship.class)) {
                 // Fetch the Serialization/Deserialization key //
                 String relationshipKey = DeserializationUtilities.getFieldJsonKey(field);
 
@@ -274,8 +283,17 @@ class JsonApiObjectManager {
         }
 
         // Then, fetch the Relationship Methods on the Type //
-        for(Method method : object.getClass().getDeclaredMethods()) {
-            if(method.isAnnotationPresent(JsonApiRelationship.class) && method.isAnnotationPresent(JsonProperty.class)) {
+        List<Method> completeMethods = new ArrayList<Method>();
+        type = object.getClass();
+        while(type != null) {
+            for(Method method : type.getDeclaredMethods()) {
+                completeMethods.add(method);
+            }
+            type = type.getSuperclass();
+        }
+
+        for(Method method : completeMethods) {
+            if(method.isAnnotationPresent(JsonApiRelationship.class)) {
                 // Fetch the Serialization/Deserialization key //
                 String relationshipKey = DeserializationUtilities.getMethodJsonKey(method);
 

@@ -1,18 +1,18 @@
 package com.cradlepoint.jsonapiary.serializers.helpers;
 
-import com.cradlepoint.jsonapiary.annotations.JsonApiIgnore;
+import com.cradlepoint.jsonapiary.annotations.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.cradlepoint.jsonapiary.annotations.JsonApiMeta;
-import com.cradlepoint.jsonapiary.annotations.JsonApiProperty;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JsonApiAnnotationAnalyzer {
@@ -53,46 +53,64 @@ public class JsonApiAnnotationAnalyzer {
         boolean isAnnotationAlsoCatchAll = CATCH_ALL_JSON_API_OBJECT.equals(annotation);
 
         // First, fetch all the Fields //
-        for(Field field : jsonApiObject.getClass().getDeclaredFields()) {
-            if(field.isAnnotationPresent(JsonProperty.class)) {
-                JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
+        List<Field> completeFields = new ArrayList<Field>();
+        Class type = jsonApiObject.getClass();
+        while(type != null) {
+            for(Field field : type.getDeclaredFields()) {
+                completeFields.add(field);
+            }
+            type = type.getSuperclass();
+        }
 
-                if(field.isAnnotationPresent(annotation)) {
-                    // This Field is EXPLICITLY part of the annotation //
-                    jsons.put(jsonProperty.value(), fetchFieldValue(jsonApiObject, field, jsonGenerator));
-                } else if(isOtherJsonApiAnnotationPresent(field.getDeclaredAnnotations(), annotation)) {
-                    // This Field is explicitly NOT part of the annotation //
-                    continue;
-                } else if (field.isAnnotationPresent(JsonApiIgnore.class)) {
-                    // This Field is explicitly NOT to be included in the JsonAPI serialization
-                } else if(isAnnotationAlsoCatchAll) {
-                    // This Field is IMPLICITLY part of the annotation //
-                    jsons.put(jsonProperty.value(), fetchFieldValue(jsonApiObject, field, jsonGenerator));
-                } else {
-                    // This Field is un-annotated //
-                }
+        for(Field field : completeFields) {
+            if(field.isAnnotationPresent(annotation)) {
+                // This Field is EXPLICITLY part of the annotation //
+                jsons.put(
+                        fetchFieldKey(field, annotation),
+                        fetchFieldValue(jsonApiObject, field, jsonGenerator));
+            } else if(isOtherJsonApiAnnotationPresent(field.getDeclaredAnnotations(), annotation)) {
+                // This Field is explicitly NOT part of the annotation //
+                continue;
+            } else if (field.isAnnotationPresent(JsonApiIgnore.class)) {
+                // This Field is explicitly NOT to be included in the JsonAPI serialization
+            } else if(isAnnotationAlsoCatchAll && field.isAnnotationPresent(JsonProperty.class)) {
+                // This Field is IMPLICITLY part of the annotation //
+                jsons.put(
+                        fetchFieldKey(field, annotation),
+                        fetchFieldValue(jsonApiObject, field, jsonGenerator));
+            } else {
+                // This Field is un-annotated //
             }
         }
 
         // Then Fetch all the Methods //
-        for(Method method : jsonApiObject.getClass().getDeclaredMethods()) {
-            if(method.isAnnotationPresent(JsonProperty.class)) {
-                JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
+        List<Method> completeMethods = new ArrayList<Method>();
+        type = jsonApiObject.getClass();
+        while(type != null) {
+            for(Method method : type.getDeclaredMethods()) {
+                completeMethods.add(method);
+            }
+            type = type.getSuperclass();
+        }
 
-                if(method.isAnnotationPresent(annotation)) {
-                    // This Method is EXPLICITLY part of the annotation //
-                    jsons.put(jsonProperty.value(), fetchMethodValue(jsonApiObject, method, jsonGenerator));
-                } else if(isOtherJsonApiAnnotationPresent(method.getDeclaredAnnotations(), annotation)) {
-                    // This Method is explicitly NOT part of the annotation //
-                    continue;
-                } else if (method.isAnnotationPresent(JsonApiIgnore.class)) {
-                    // This Field is explicitly NOT to be included in the JsonAPI serialization
-                } else if(isAnnotationAlsoCatchAll) {
-                    // This Method is IMPLICITLY part of the annotation //
-                    jsons.put(jsonProperty.value(), fetchMethodValue(jsonApiObject, method, jsonGenerator));
-                } else {
-                    // This Method is un-annotated //
-                }
+        for(Method method : completeMethods) {
+            if(method.isAnnotationPresent(annotation)) {
+                // This Method is EXPLICITLY part of the annotation //
+                jsons.put(
+                        fetchMethodKey(method,  annotation),
+                        fetchMethodValue(jsonApiObject, method, jsonGenerator));
+            } else if(isOtherJsonApiAnnotationPresent(method.getDeclaredAnnotations(), annotation)) {
+                // This Method is explicitly NOT part of the annotation //
+                continue;
+            } else if (method.isAnnotationPresent(JsonApiIgnore.class)) {
+                // This Field is explicitly NOT to be included in the JsonAPI serialization
+            } else if(isAnnotationAlsoCatchAll && method.isAnnotationPresent(JsonProperty.class)) {
+                // This Method is IMPLICITLY part of the annotation //
+                jsons.put(
+                        fetchMethodKey(method,  annotation),
+                        fetchMethodValue(jsonApiObject, method, jsonGenerator));
+            } else {
+                // This Method is un-annotated //
             }
         }
 
@@ -102,6 +120,72 @@ public class JsonApiAnnotationAnalyzer {
     /////////////////////
     // Private Methods //
     /////////////////////
+
+    private static String fetchFieldKey(
+            Field field,
+            Class<? extends Annotation> jsonApiAnnotation) {
+        String key = null;
+
+        // Check to see if there is a JsonAPI annotation with a value //
+        if(jsonApiAnnotation == JsonApiAttribute.class && field.isAnnotationPresent(JsonApiAttribute.class)) {
+            key = field.getAnnotation(JsonApiAttribute.class).value();
+        } else if(jsonApiAnnotation == JsonApiLink.class && field.isAnnotationPresent(JsonApiLink.class)) {
+            key = field.getAnnotation(JsonApiLink.class).value();
+        } else if(jsonApiAnnotation == JsonApiMeta.class && field.isAnnotationPresent(JsonApiMeta.class)) {
+            key = field.getAnnotation(JsonApiMeta.class).value();
+        } else if(jsonApiAnnotation == JsonApiRelationship.class && field.isAnnotationPresent(JsonApiRelationship.class)) {
+            key = field.getAnnotation(JsonApiRelationship.class).value();
+        }
+
+        if(key != null && !key.isEmpty()) {
+            return key;
+        }
+
+        // Check to see if there is a value on a Jackson annotation //
+        if(field.isAnnotationPresent(JsonProperty.class)) {
+            key = field.getAnnotation(JsonProperty.class).value();
+        }
+
+        if(key != null && !key.isEmpty()) {
+            return key;
+        }
+
+        // As a last resort, return the field name //
+        return field.getName();
+    }
+
+    private static String fetchMethodKey(
+            Method method,
+            Class<? extends Annotation> jsonApiAnnotation) {
+        String key = null;
+
+        // Check to see if there is a JsonAPI annotation with a value //
+        if(jsonApiAnnotation == JsonApiAttribute.class && method.isAnnotationPresent(JsonApiAttribute.class)) {
+            key = method.getAnnotation(JsonApiAttribute.class).value();
+        } else if(jsonApiAnnotation == JsonApiLink.class && method.isAnnotationPresent(JsonApiLink.class)) {
+            key = method.getAnnotation(JsonApiLink.class).value();
+        } else if(jsonApiAnnotation == JsonApiMeta.class && method.isAnnotationPresent(JsonApiMeta.class)) {
+            key = method.getAnnotation(JsonApiMeta.class).value();
+        } else if(jsonApiAnnotation == JsonApiRelationship.class && method.isAnnotationPresent(JsonApiRelationship.class)) {
+            key = method.getAnnotation(JsonApiRelationship.class).value();
+        }
+
+        if(key != null && !key.isEmpty()) {
+            return key;
+        }
+
+        // Check to see if there is a value on a Jackson annotation //
+        if(method.isAnnotationPresent(JsonProperty.class)) {
+            key = method.getAnnotation(JsonProperty.class).value();
+        }
+
+        if(key != null && !key.isEmpty()) {
+            return key;
+        }
+
+        // As a last resort, return the field name //
+        return method.getName();
+    }
 
     private static Object fetchFieldValue(
             Object jsonApiObject,
@@ -113,11 +197,15 @@ public class JsonApiAnnotationAnalyzer {
             // Noop...
         }
 
-        try {
-            Method getter = jsonApiObject.getClass().getDeclaredMethod(generateGetterName(field.getName()));
-            return getter.invoke(jsonApiObject);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            // Noop...
+        Class type = jsonApiObject.getClass();
+        while(type != null) {
+            try {
+                Method getter = type.getDeclaredMethod(generateGetterName(field.getName()));
+                return getter.invoke(jsonApiObject);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                // Noop...
+            }
+            type = type.getSuperclass();
         }
 
         String issue = "Unable to access value for field: " + field.getName() + " . The field is both private," +
@@ -140,7 +228,7 @@ public class JsonApiAnnotationAnalyzer {
             // Noop...
         }
 
-        String issue = "Unable to access JsonProperty annotated method: " + method.getName() + " on type: " +
+        String issue = "Unable to access json annotated method: " + method.getName() + " on type: " +
                 jsonApiObject.getClass().getName() + " !!";
         throw JsonMappingException.from(jsonGenerator, issue);
     }

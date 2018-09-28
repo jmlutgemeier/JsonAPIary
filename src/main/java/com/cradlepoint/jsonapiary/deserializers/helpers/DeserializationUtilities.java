@@ -1,12 +1,14 @@
 package com.cradlepoint.jsonapiary.deserializers.helpers;
 
-import com.cradlepoint.jsonapiary.annotations.JsonApiId;
+import com.cradlepoint.jsonapiary.annotations.*;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
 import com.cradlepoint.jsonapiary.deserializers.ResourceLinkage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DeserializationUtilities {
@@ -65,11 +67,18 @@ public class DeserializationUtilities {
      * @return
      */
     public static String getFieldJsonKey(Field field) {
-        JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
-        if(jsonProperty == null || jsonProperty.value() == null || jsonProperty.value().isEmpty()) {
-            return field.getName();
+        if(field.isAnnotationPresent(JsonApiAttribute.class) && !(field.getAnnotation(JsonApiAttribute.class).value().isEmpty())) {
+            return field.getAnnotation(JsonApiAttribute.class).value();
+        } else if(field.isAnnotationPresent(JsonApiLink.class) && !(field.getAnnotation(JsonApiLink.class).value().isEmpty())) {
+            return field.getAnnotation(JsonApiLink.class).value();
+        } else if(field.isAnnotationPresent(JsonApiMeta.class) && !(field.getAnnotation(JsonApiMeta.class).value().isEmpty())) {
+            return field.getAnnotation(JsonApiMeta.class).value();
+        } else if(field.isAnnotationPresent(JsonApiRelationship.class) && !(field.getAnnotation(JsonApiRelationship.class).value().isEmpty())) {
+            return field.getAnnotation(JsonApiRelationship.class).value();
+        } else if(field.isAnnotationPresent(JsonProperty.class) && !(field.getAnnotation(JsonProperty.class).value().isEmpty())) {
+            return field.getAnnotation(JsonProperty.class).value();
         } else {
-            return jsonProperty.value();
+            return field.getName();
         }
     }
 
@@ -79,13 +88,18 @@ public class DeserializationUtilities {
      * @return
      */
     public static String getMethodJsonKey(Method method) {
-        JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
-        if(jsonProperty == null || jsonProperty.value() == null || jsonProperty.value().isEmpty()) {
-            String issue = "Could not determine json key for JsonAPI annotate Method " + method.getName() +
-                    " on Type " + method.getDeclaringClass().getName() + "!";
-            throw new IllegalStateException(issue);
+        if(method.isAnnotationPresent(JsonApiAttribute.class) && !(method.getAnnotation(JsonApiAttribute.class).value().isEmpty())) {
+            return method.getAnnotation(JsonApiAttribute.class).value();
+        } else if(method.isAnnotationPresent(JsonApiLink.class) && !(method.getAnnotation(JsonApiLink.class).value().isEmpty())) {
+            return method.getAnnotation(JsonApiLink.class).value();
+        } else if(method.isAnnotationPresent(JsonApiMeta.class) && !(method.getAnnotation(JsonApiMeta.class).value().isEmpty())) {
+            return method.getAnnotation(JsonApiMeta.class).value();
+        } else if(method.isAnnotationPresent(JsonApiRelationship.class) && !(method.getAnnotation(JsonApiRelationship.class).value().isEmpty())) {
+            return method.getAnnotation(JsonApiRelationship.class).value();
+        } else if(method.isAnnotationPresent(JsonProperty.class) && !(method.getAnnotation(JsonProperty.class).value().isEmpty())) {
+            return method.getAnnotation(JsonProperty.class).value();
         } else {
-            return jsonProperty.value();
+            return method.getName();
         }
     }
 
@@ -108,8 +122,17 @@ public class DeserializationUtilities {
         }
 
         // Look for a "setter" for the field //
+        List<Method> completeMethods = new ArrayList<Method>();
+        Class type = onto.getClass();
+        while (type != null) {
+            for(Method method : type.getDeclaredMethods()) {
+                completeMethods.add(method);
+            }
+            type = type.getSuperclass();
+        }
+
         Method setterMethod = null;
-        for(Method method : onto.getClass().getDeclaredMethods()) {
+        for(Method method : completeMethods) {
             JsonProperty jsonPropertyAnnotation = method.getAnnotation(JsonProperty.class);
             if(method.getName().startsWith("set") && jsonPropertyAnnotation != null && jsonPropertyAnnotation.value().equals(getFieldJsonKey(field))) {
                 setterMethod = method;
@@ -219,13 +242,24 @@ public class DeserializationUtilities {
             JsonNode jsonNode) {
         // Fetch the ID object from the json, as the correct object type //
         Field idField = null;
-        for(Field field : objectType.getDeclaredFields()) {
-            if(field.isAnnotationPresent(JsonApiId.class)) {
-                idField = field;
-                break;
+        Class type = objectType;
+        while(type != null) {
+            for (Field field : type.getDeclaredFields()) {
+                if (field.isAnnotationPresent(JsonApiId.class)) {
+                    idField = field;
+                    break;
+                }
             }
+            type = type.getSuperclass();
         }
 
+        // Sanity Check //
+        if(idField == null) {
+            String issue = "No \"id\" found in the json when deserializing type: " + objectType.getName();
+            throw new IllegalArgumentException(issue);
+        }
+
+        // Deserialize the ID //
         Object id = null;
         Class idType = idField.getType();
         if(idType == String.class) {
@@ -259,11 +293,15 @@ public class DeserializationUtilities {
             JsonNode jsonNode) {
         // Fetch the ID object from the json, as the correct object type //
         Field idField = null;
-        for(Field field : objectType.getDeclaredFields()) {
-            if(field.isAnnotationPresent(JsonApiId.class)) {
-                idField = field;
-                break;
+        Class type = objectType;
+        while(type != null) {
+            for (Field field : type.getDeclaredFields()) {
+                if (field.isAnnotationPresent(JsonApiId.class)) {
+                    idField = field;
+                    break;
+                }
             }
+            type = type.getSuperclass();
         }
 
         Object id = fetchIdFromNode(objectType, jsonNode);
@@ -278,14 +316,18 @@ public class DeserializationUtilities {
 
         // Look for "setter" Method //
         Method idSetMethod = null;
-        for(Method method : objectType.getDeclaredMethods()) {
-            if(method.getName().startsWith("set") && method.isAnnotationPresent(JsonApiId.class)) {
-                idSetMethod = method;
-                break;
-            } else if(method.getName().equals("set" + idField.getName().substring(0, 1).toUpperCase() + idField.getName().substring(1))) {
-                idSetMethod = method;
-                break;
+        type = objectType;
+        while (type != null) {
+            for (Method method : type.getDeclaredMethods()) {
+                if (method.getName().startsWith("set") && method.isAnnotationPresent(JsonApiId.class)) {
+                    idSetMethod = method;
+                    break;
+                } else if (method.getName().equals("set" + idField.getName().substring(0, 1).toUpperCase() + idField.getName().substring(1))) {
+                    idSetMethod = method;
+                    break;
+                }
             }
+            type = type.getSuperclass();
         }
 
         if(idSetMethod == null) {

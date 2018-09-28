@@ -8,4 +8,12 @@ import java.lang.annotation.Target;
 @JsonApiProperty
 @Target({ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JsonApiAttribute { }
+public @interface JsonApiAttribute {
+
+    /**
+     * Override for serialized key, otherwise will default to the @JsonProperty or attribute name
+     * @return
+     */
+    String value() default "";
+
+}
