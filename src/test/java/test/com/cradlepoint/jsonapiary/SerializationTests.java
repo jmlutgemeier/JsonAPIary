@@ -515,4 +515,25 @@ public class SerializationTests {
                 "}"));
     }
 
+    @Test
+    public void booleanGetterWithIsTest() throws Exception {
+        // Init Test Objects //
+        TypeWithABoolean typeWithABoolean = new TypeWithABoolean();
+        typeWithABoolean.setId(1337);
+        typeWithABoolean.setBool(false);
+
+        // Serialize and Verify //
+        String json = objectMapper.writeValueAsString(new JsonApiEnvelope<TypeWithABoolean>(typeWithABoolean));
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : {\n" +
+                "    \"id\" : 1337,\n" +
+                "    \"type\" : \"TypeWithABoolean\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"bool\" : false\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"));
+    }
+
 }

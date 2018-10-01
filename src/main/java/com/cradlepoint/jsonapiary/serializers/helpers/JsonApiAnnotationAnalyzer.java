@@ -199,11 +199,13 @@ public class JsonApiAnnotationAnalyzer {
 
         Class type = jsonApiObject.getClass();
         while(type != null) {
-            try {
-                Method getter = type.getDeclaredMethod(generateGetterName(field.getName()));
-                return getter.invoke(jsonApiObject);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                // Noop...
+            for(String methodName : generateGetterNames(field)) {
+                try {
+                    Method getter = type.getDeclaredMethod(methodName);
+                    return getter.invoke(jsonApiObject);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    // Noop...
+                }
             }
             type = type.getSuperclass();
         }
@@ -213,9 +215,20 @@ public class JsonApiAnnotationAnalyzer {
         throw JsonMappingException.from(jsonGenerator, issue);
     }
 
-    private static String generateGetterName(
-            String fieldName) {
-        return "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    private static List<String> generateGetterNames(
+            Field field) {
+        List<String> getterNames = new ArrayList<String>();
+
+        // Add the obvious/simple getter name //
+        String fieldName = field.getName();
+        getterNames.add("get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
+
+        // Add bool getter, if applicable //
+        if(field.getType() == boolean.class || field.getType() == Boolean.class) {
+            getterNames.add("is" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1));
+        }
+
+        return getterNames;
     }
 
     private static Object fetchMethodValue(
