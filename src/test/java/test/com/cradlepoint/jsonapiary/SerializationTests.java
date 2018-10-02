@@ -536,4 +536,146 @@ public class SerializationTests {
                 "}"));
     }
 
+    @Test
+    public void listOfObjectsWithIncludedsTest() throws Exception {
+        // Init Test Objects //
+        List<SimpleObject> simpleObjectList = new ArrayList<SimpleObject>();
+        for(int i1 = 0; i1 < 4; i1++) {
+            SimpleSubObject simpleSubObject = new SimpleSubObject();
+            simpleSubObject.setId("Object Number " + i1);
+            simpleSubObject.setBaz("Baz " + (i1 * i1));
+
+            SimpleObject simpleObject = new SimpleObject();
+            simpleObject.setId((i1 * 10l));
+            simpleObject.setAttribute("an attribute!");
+            simpleObject.setThing2(simpleSubObject);
+
+            simpleObjectList.add(simpleObject);
+        }
+
+        // Serialize and Verify //
+        String json  = objectMapper.writeValueAsString(new JsonApiEnvelope<List<SimpleObject>>(simpleObjectList));
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : [ {\n" +
+                "    \"id\" : 0,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"an attribute!\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someOtherRelationship\" : {\n" +
+                "        \"data\" : {\n" +
+                "          \"id\" : \"Object Number 0\",\n" +
+                "          \"type\" : \"TypeOverride\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 10,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"an attribute!\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someOtherRelationship\" : {\n" +
+                "        \"data\" : {\n" +
+                "          \"id\" : \"Object Number 1\",\n" +
+                "          \"type\" : \"TypeOverride\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 20,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"an attribute!\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someOtherRelationship\" : {\n" +
+                "        \"data\" : {\n" +
+                "          \"id\" : \"Object Number 2\",\n" +
+                "          \"type\" : \"TypeOverride\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : 30,\n" +
+                "    \"type\" : \"SimpleObject\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"objectAttribute\" : \"an attribute!\"\n" +
+                "    },\n" +
+                "    \"meta\" : {\n" +
+                "      \"catchAllThing\" : \"this should ahve been caught\",\n" +
+                "      \"objectBlah\" : \"blah!\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"someOtherRelationship\" : {\n" +
+                "        \"data\" : {\n" +
+                "          \"id\" : \"Object Number 3\",\n" +
+                "          \"type\" : \"TypeOverride\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  } ],\n" +
+                "  \"included\" : [ {\n" +
+                "    \"id\" : \"Object Number 3\",\n" +
+                "    \"type\" : \"TypeOverride\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"BAZ\" : \"Baz 9\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"NESTEDnestedNESTED\" : {\n" +
+                "        \"data\" : [ ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : \"Object Number 2\",\n" +
+                "    \"type\" : \"TypeOverride\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"BAZ\" : \"Baz 4\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"NESTEDnestedNESTED\" : {\n" +
+                "        \"data\" : [ ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : \"Object Number 0\",\n" +
+                "    \"type\" : \"TypeOverride\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"BAZ\" : \"Baz 0\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"NESTEDnestedNESTED\" : {\n" +
+                "        \"data\" : [ ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : \"Object Number 1\",\n" +
+                "    \"type\" : \"TypeOverride\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"BAZ\" : \"Baz 1\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"NESTEDnestedNESTED\" : {\n" +
+                "        \"data\" : [ ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  } ]\n" +
+                "}"));
+    }
+
 }

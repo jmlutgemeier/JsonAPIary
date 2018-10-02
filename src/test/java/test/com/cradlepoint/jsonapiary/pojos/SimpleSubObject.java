@@ -36,17 +36,15 @@ public class SimpleSubObject {
 
     public SimpleSubObject() {
         id = RandomStringUtils.random(8);
-
         baz = "...BAZ...! " + 0;
-
+        nestedThing = null;
         nestedThings = new ArrayList<>();
     }
 
     public SimpleSubObject(int numNestedThings) {
         id = RandomStringUtils.random(8);
-
         baz = "...BAZ...! " + numNestedThings;
-
+        nestedThing = null;
         nestedThings = new ArrayList<>();
         for(int i1 = 0; i1 < numNestedThings; i1++) {
             nestedThings.add(new SimpleNestedSubObject());

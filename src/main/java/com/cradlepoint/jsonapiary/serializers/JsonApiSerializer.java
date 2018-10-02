@@ -207,11 +207,12 @@ class JsonApiSerializer {
                     includes.add(element);
                     break;
                 default:
-                    this.serializeJsonApiObject(
-                            element,
-                            serializationContext,
-                            jsonGenerator,
-                            serializerProvider);
+                    includes.addAll(
+                        this.serializeJsonApiObject(
+                                element,
+                                serializationContext,
+                                jsonGenerator,
+                                serializerProvider));
             }
         }
         jsonGenerator.writeEndArray();

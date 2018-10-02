@@ -10,6 +10,8 @@ import org.junit.Test;
 import test.com.cradlepoint.jsonapiary.pojos.*;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComboTests {
 
@@ -138,6 +140,34 @@ public class ComboTests {
 
         // Then, attempt to deserialize and verify //
         JsonApiEnvelope<AChildClass> deserializedObject = objectMapper.readValue(json, JsonApiEnvelope.class);
+        Assert.assertNotNull(deserializedObject);
+        Assert.assertTrue(jsonApiEnvelope.equals(deserializedObject));
+    }
+
+    @Test
+    public void listOfObjectsTest() throws Exception {
+        // Init Test Objects //
+        List<SimpleObject> simpleObjectList = new ArrayList<SimpleObject>();
+        for (int i1 = 0; i1 < 4; i1++) {
+            SimpleSubObject simpleSubObject = new SimpleSubObject();
+            simpleSubObject.setId("Object Number " + i1);
+            simpleSubObject.setBaz("Baz " + (i1 * i1));
+
+            SimpleObject simpleObject = new SimpleObject();
+            simpleObject.setId((i1 * 10l));
+            simpleObject.setAttribute("an attribute!");
+            simpleObject.setThing2(simpleSubObject);
+
+            simpleObjectList.add(simpleObject);
+        }
+        JsonApiEnvelope<List<SimpleObject>> jsonApiEnvelope = new JsonApiEnvelope<List<SimpleObject>>(simpleObjectList);
+
+        // Serialize! //
+        String json = objectMapper.writeValueAsString(jsonApiEnvelope);
+        Assert.assertNotNull(json);
+
+        // Verify!! //
+        JsonApiEnvelope<List<SimpleObject>> deserializedObject = objectMapper.readValue(json, JsonApiEnvelope.class);
         Assert.assertNotNull(deserializedObject);
         Assert.assertTrue(jsonApiEnvelope.equals(deserializedObject));
     }
