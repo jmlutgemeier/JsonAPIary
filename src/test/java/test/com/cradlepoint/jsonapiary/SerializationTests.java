@@ -64,7 +64,7 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
-                "    \"id\" : 1.0,\n" +
+                "    \"id\" : \"1.0\",\n" +
                 "    \"type\" : \"SingleLinkNode\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"value\" : \"Logan was here 1.0 times!\"\n" +
@@ -72,14 +72,14 @@ public class SerializationTests {
                 "    \"relationships\" : {\n" +
                 "      \"link\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : 2.0,\n" +
+                "          \"id\" : \"2.0\",\n" +
                 "          \"type\" : \"SingleLinkNode\"\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }\n" +
                 "  },\n" +
                 "  \"included\" : [ {\n" +
-                "    \"id\" : 2.0,\n" +
+                "    \"id\" : \"2.0\",\n" +
                 "    \"type\" : \"SingleLinkNode\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"value\" : \"Logan was here 2.0 times!\"\n" +
@@ -87,13 +87,13 @@ public class SerializationTests {
                 "    \"relationships\" : {\n" +
                 "      \"link\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : 3.0,\n" +
+                "          \"id\" : \"3.0\",\n" +
                 "          \"type\" : \"SingleLinkNode\"\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }\n" +
                 "  }, {\n" +
-                "    \"id\" : 3.0,\n" +
+                "    \"id\" : \"3.0\",\n" +
                 "    \"type\" : \"SingleLinkNode\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"value\" : \"Logan was here 3.0 times!\"\n" +
@@ -101,7 +101,7 @@ public class SerializationTests {
                 "    \"relationships\" : {\n" +
                 "      \"link\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : 1.0,\n" +
+                "          \"id\" : \"1.0\",\n" +
                 "          \"type\" : \"SingleLinkNode\"\n" +
                 "        }\n" +
                 "      }\n" +
@@ -140,7 +140,7 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
-                "    \"id\" : 9876,\n" +
+                "    \"id\" : \"9876\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"AtTrIbUtE!\"\n" +
@@ -167,34 +167,34 @@ public class SerializationTests {
                 "    \"relationships\" : {\n" +
                 "      \"NESTEDnestedNESTED\" : {\n" +
                 "        \"data\" : [ {\n" +
-                "          \"id\" : 1,\n" +
+                "          \"id\" : \"1\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        }, {\n" +
-                "          \"id\" : 2,\n" +
+                "          \"id\" : \"2\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        }, {\n" +
-                "          \"id\" : 3,\n" +
+                "          \"id\" : \"3\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        }, {\n" +
-                "          \"id\" : 4,\n" +
+                "          \"id\" : \"4\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        }, {\n" +
-                "          \"id\" : 5,\n" +
+                "          \"id\" : \"5\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        }, {\n" +
-                "          \"id\" : 6,\n" +
+                "          \"id\" : \"6\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        }, {\n" +
-                "          \"id\" : 7,\n" +
+                "          \"id\" : \"7\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        }, {\n" +
-                "          \"id\" : 8,\n" +
+                "          \"id\" : \"8\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        } ]\n" +
                 "      },\n" +
                 "      \"SINGLEnestedTHING\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : 54321,\n" +
+                "          \"id\" : \"54321\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
                 "        },\n" +
                 "        \"meta\" : {\n" +
@@ -209,7 +209,7 @@ public class SerializationTests {
                 "      }\n" +
                 "    }\n" +
                 "  }, {\n" +
-                "    \"id\" : 54321,\n" +
+                "    \"id\" : \"54321\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"qwerty\"\n" +
@@ -224,56 +224,56 @@ public class SerializationTests {
                 "      }\n" +
                 "    }\n" +
                 "  }, {\n" +
-                "    \"id\" : 1,\n" +
+                "    \"id\" : \"1\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #2\"\n" +
                 "    },\n" +
                 "    \"meta\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 2,\n" +
+                "    \"id\" : \"2\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #3\"\n" +
                 "    },\n" +
                 "    \"meta\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 3,\n" +
+                "    \"id\" : \"3\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #4\"\n" +
                 "    },\n" +
                 "    \"meta\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 4,\n" +
+                "    \"id\" : \"4\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #5\"\n" +
                 "    },\n" +
                 "    \"meta\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 5,\n" +
+                "    \"id\" : \"5\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #6\"\n" +
                 "    },\n" +
                 "    \"meta\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 6,\n" +
+                "    \"id\" : \"6\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #7\"\n" +
                 "    },\n" +
                 "    \"meta\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 7,\n" +
+                "    \"id\" : \"7\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #8\"\n" +
                 "    },\n" +
                 "    \"meta\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 8,\n" +
+                "    \"id\" : \"8\",\n" +
                 "    \"type\" : \"SimpleNestedSubObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"aNestedTHING\" : \"Loooooooogan #9\"\n" +
@@ -301,7 +301,7 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : [ {\n" +
-                "    \"id\" : 0,\n" +
+                "    \"id\" : \"0\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 0\"\n" +
@@ -312,7 +312,7 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"relationships\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 1,\n" +
+                "    \"id\" : \"1\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 1\"\n" +
@@ -323,7 +323,7 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"relationships\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 2,\n" +
+                "    \"id\" : \"2\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 2\"\n" +
@@ -334,7 +334,7 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"relationships\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 3,\n" +
+                "    \"id\" : \"3\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 3\"\n" +
@@ -345,7 +345,7 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"relationships\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 4,\n" +
+                "    \"id\" : \"4\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 4\"\n" +
@@ -356,7 +356,7 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"relationships\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 5,\n" +
+                "    \"id\" : \"5\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 5\"\n" +
@@ -367,7 +367,7 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"relationships\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 6,\n" +
+                "    \"id\" : \"6\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 6\"\n" +
@@ -378,7 +378,7 @@ public class SerializationTests {
                 "    },\n" +
                 "    \"relationships\" : { }\n" +
                 "  }, {\n" +
-                "    \"id\" : 7,\n" +
+                "    \"id\" : \"7\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"object number 7\"\n" +
@@ -408,7 +408,7 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
-                "    \"id\" : 666,\n" +
+                "    \"id\" : \"666\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"the attribute of the beast.\"\n" +
@@ -442,7 +442,7 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
-                "    \"id\" : 1,\n" +
+                "    \"id\" : \"1\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"O.N.E.\"\n" +
@@ -490,7 +490,7 @@ public class SerializationTests {
                 "    \"relationships\" : {\n" +
                 "      \"whatDoIHave\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : 314,\n" +
+                "          \"id\" : \"314\",\n" +
                 "          \"type\" : \"SimpleObject\"\n" +
                 "        },\n" +
                 "        \"meta\" : {\n" +
@@ -501,7 +501,7 @@ public class SerializationTests {
                 "    }\n" +
                 "  },\n" +
                 "  \"included\" : [ {\n" +
-                "    \"id\" : 314,\n" +
+                "    \"id\" : \"314\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"pi\"\n" +
@@ -527,7 +527,7 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
-                "    \"id\" : 1337,\n" +
+                "    \"id\" : \"1337\",\n" +
                 "    \"type\" : \"TypeWithABoolean\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"bool\" : false\n" +
@@ -558,7 +558,7 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : [ {\n" +
-                "    \"id\" : 0,\n" +
+                "    \"id\" : \"0\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"an attribute!\"\n" +
@@ -576,7 +576,7 @@ public class SerializationTests {
                 "      }\n" +
                 "    }\n" +
                 "  }, {\n" +
-                "    \"id\" : 10,\n" +
+                "    \"id\" : \"10\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"an attribute!\"\n" +
@@ -594,7 +594,7 @@ public class SerializationTests {
                 "      }\n" +
                 "    }\n" +
                 "  }, {\n" +
-                "    \"id\" : 20,\n" +
+                "    \"id\" : \"20\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"an attribute!\"\n" +
@@ -612,7 +612,7 @@ public class SerializationTests {
                 "      }\n" +
                 "    }\n" +
                 "  }, {\n" +
-                "    \"id\" : 30,\n" +
+                "    \"id\" : \"30\",\n" +
                 "    \"type\" : \"SimpleObject\",\n" +
                 "    \"attributes\" : {\n" +
                 "      \"objectAttribute\" : \"an attribute!\"\n" +
