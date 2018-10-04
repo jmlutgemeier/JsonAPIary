@@ -262,16 +262,19 @@ public class DeserializationUtilities {
         // Deserialize the ID //
         Object id = null;
         Class idType = idField.getType();
-        if(idType == String.class) {
-            id = jsonNode.get(JsonApiKeyConstants.ID_KEY).asText();
+        JsonNode idNode = jsonNode.get(JsonApiKeyConstants.ID_KEY);
+        if(idNode == null || idNode.isNull()) {
+            id = null;
+        } else if(idType == String.class) {
+            id = idNode.asText();
         } else if(idType == Integer.class || idType == int.class) {
-            id = jsonNode.get(JsonApiKeyConstants.ID_KEY).asInt();
+            id = idNode.asInt();
         } else if(idType == Long.class || idType == long.class) {
-            id = jsonNode.get(JsonApiKeyConstants.ID_KEY).asLong();
+            id = idNode.asLong();
         } else if(idType == Float.class || idType == float.class) {
-            id = jsonNode.get(JsonApiKeyConstants.ID_KEY).floatValue();
+            id = idNode.floatValue();
         } else if(idType == Double.class || idType == double.class) {
-            id = jsonNode.get(JsonApiKeyConstants.ID_KEY).asDouble();
+            id = idNode.asDouble();
         } else {
             String issue = "Unknown/Unexpected type for \"id\" field on type: " + objectType.getName() + " ... " +
                     "The only accepted types are String, Integer, Long, Float, and Double.";

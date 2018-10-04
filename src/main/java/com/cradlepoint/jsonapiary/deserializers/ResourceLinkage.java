@@ -48,14 +48,7 @@ public class ResourceLinkage {
             return false;
         }
 
-        ResourceLinkage received = (ResourceLinkage) object;
-        if(!this.id.equals(received.id)) {
-            return false;
-        } else if(!this.type.equals(received.type)) {
-            return false;
-        } else {
-            return true;
-        }
+        return (this.hashCode() == object.hashCode());
     }
 
     @Override
