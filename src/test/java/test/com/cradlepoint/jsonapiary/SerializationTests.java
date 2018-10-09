@@ -1,10 +1,11 @@
 package test.com.cradlepoint.jsonapiary;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.cradlepoint.jsonapiary.JsonApiModule;
 import com.cradlepoint.jsonapiary.envelopes.JsonApiEnvelope;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Assert;
 import org.junit.Test;
 import test.com.cradlepoint.jsonapiary.pojos.*;
@@ -12,6 +13,7 @@ import test.com.cradlepoint.jsonapiary.pojos.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SerializationTests {
 
@@ -32,7 +34,8 @@ public class SerializationTests {
                 SimpleNestedSubObject.class,
                 SingleLinkNode.class,
                 ABaseClass.class,
-                AChildClass.class);
+                AChildClass.class,
+                TypeWithALink.class);
 
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -676,6 +679,82 @@ public class SerializationTests {
                 "    }\n" +
                 "  } ]\n" +
                 "}"));
+    }
+
+    @Test
+    public void typeWithLinkStringHappyPathTest() throws Exception {
+        // Init Test Objects //
+        TypeWithALink typeWithALink = new TypeWithALink();
+        typeWithALink.setId("abcd-efgh-ijkl-mnop");
+
+        String link = "https://cradlepoint.com/";
+        typeWithALink.setLink(link);
+
+        // Serialize and Verify //
+        String json = objectMapper.writeValueAsString(new JsonApiEnvelope<TypeWithALink>(typeWithALink));
+
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : {\n" +
+                "    \"id\" : \"abcd-efgh-ijkl-mnop\",\n" +
+                "    \"type\" : \"LoganWasHere\",\n" +
+                "    \"links\" : {\n" +
+                "      \"LinkForLogan\" : \"https://cradlepoint.com/\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"));
+
+    }
+
+    @Test
+    public void typeWithLinkUrlHappyPathTest() throws Exception {
+        // Init Test Objects //
+        TypeWithALink typeWithALink = new TypeWithALink();
+        typeWithALink.setId("abcd-efgh-ijkl-mnop");
+
+        URL link = new URL("https://cradlepoint.com/");
+        typeWithALink.setLink(link);
+
+        // Serialize and Verify //
+        String json = objectMapper.writeValueAsString(new JsonApiEnvelope<TypeWithALink>(typeWithALink));
+
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : {\n" +
+                "    \"id\" : \"abcd-efgh-ijkl-mnop\",\n" +
+                "    \"type\" : \"LoganWasHere\",\n" +
+                "    \"links\" : {\n" +
+                "      \"LinkForLogan\" : \"https://cradlepoint.com/\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"));
+
+    }
+
+    @Test(expected = JsonMappingException.class)
+    public void typeWithLinkStringNotUrlTest() throws Exception {
+        // Init Test Objects //
+        TypeWithALink typeWithALink = new TypeWithALink();
+        typeWithALink.setId("abcd-efgh-ijkl-mnop");
+
+        String link = "this is not a URL!";
+        typeWithALink.setLink(link);
+
+        // Serialize and Verify //
+        String json = objectMapper.writeValueAsString(new JsonApiEnvelope<TypeWithALink>(typeWithALink));
+    }
+
+    @Test(expected = JsonMappingException.class)
+    public void typeWithLinkObjectToStringNotUrlTest() throws Exception {
+        // Init Test Objects //
+        TypeWithALink typeWithALink = new TypeWithALink();
+        typeWithALink.setId("abcd-efgh-ijkl-mnop");
+
+        UUID link = UUID.randomUUID();
+        typeWithALink.setLink(link);
+
+        // Serialize and Verify //
+        String json = objectMapper.writeValueAsString(new JsonApiEnvelope<TypeWithALink>(typeWithALink));
     }
 
 }

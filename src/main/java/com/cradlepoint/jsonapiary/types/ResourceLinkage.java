@@ -1,4 +1,4 @@
-package com.cradlepoint.jsonapiary.deserializers;
+package com.cradlepoint.jsonapiary.types;
 
 import java.util.Objects;
 

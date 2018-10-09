@@ -2,7 +2,7 @@ package com.cradlepoint.jsonapiary.deserializers.helpers;
 
 import com.cradlepoint.jsonapiary.annotations.*;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
-import com.cradlepoint.jsonapiary.deserializers.ResourceLinkage;
+import com.cradlepoint.jsonapiary.types.ResourceLinkage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 

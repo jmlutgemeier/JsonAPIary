@@ -5,7 +5,7 @@ import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
 import com.cradlepoint.jsonapiary.deserializers.helpers.AttributesDeserializer;
 import com.cradlepoint.jsonapiary.deserializers.helpers.DeserializationUtilities;
 import com.cradlepoint.jsonapiary.deserializers.helpers.MetaDeserializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.cradlepoint.jsonapiary.types.ResourceLinkage;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 

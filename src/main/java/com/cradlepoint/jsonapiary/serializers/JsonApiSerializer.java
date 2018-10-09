@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +52,6 @@ class JsonApiSerializer {
             case PRIMARY:
             case RELATIONSHIP:
             case RESOURCE_LINKAGE:
-            case LINK:
                 if (object == null) {
                     jsonGenerator.writeNull();
                 } else if (isObjectJsonApiObject(object)) {
@@ -64,6 +65,23 @@ class JsonApiSerializer {
                             " object type " + object.getClass().getName() + " needs to be JsonAPIary annotated (@JsonApiType, " +
                             "amongst others).";
                     throw JsonMappingException.from(jsonGenerator, issue);
+                }
+                break;
+            case LINK:
+                if (object == null) {
+                    jsonGenerator.writeNull();
+                } else if(object.getClass() == URL.class) {
+                    jsonGenerator.writeString(object.toString());
+                } else {
+                    try {
+                        URL url = new URL(object.toString());
+                        jsonGenerator.writeString(url.toString());
+                    } catch(MalformedURLException e) {
+                        String issue = "The value returned by the \"toString()\" method on the object of type: " +
+                                object.getClass().getName() + " does not parse out into a valid URL. The other option " +
+                                " is to decorate an attribute of type " + URL.class.getName() + " as the link.";
+                        throw new IllegalArgumentException(issue, e);
+                    }
                 }
                 break;
             case ATTRIBUTE:

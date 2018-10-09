@@ -3,6 +3,7 @@ package com.cradlepoint.jsonapiary.deserializers;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
 import com.cradlepoint.jsonapiary.deserializers.helpers.LinksDeserializer;
 import com.cradlepoint.jsonapiary.envelopes.JsonApiEnvelope;
+import com.cradlepoint.jsonapiary.types.ResourceLinkage;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
