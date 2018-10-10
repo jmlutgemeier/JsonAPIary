@@ -6,9 +6,7 @@ import com.cradlepoint.jsonapiary.annotations.JsonApiRelationship;
 import com.cradlepoint.jsonapiary.annotations.JsonApiType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Random;
-
-@JsonApiType
+@JsonApiType("node")
 public class SingleLinkNode {
 
     ////////////////
@@ -17,9 +15,9 @@ public class SingleLinkNode {
 
     @JsonApiId
     @JsonProperty("id")
-    private Double id;
+    private Long id;
 
-    @JsonApiAttribute
+    @JsonApiAttribute("element")
     @JsonProperty("value")
     private String value;
 
@@ -31,24 +29,18 @@ public class SingleLinkNode {
     // Constructor //
     /////////////////
 
-    public SingleLinkNode() {
-        Random random = new Random();
-        id = random.nextDouble();
-        value = "Logan was here " + id + " times.";
-        linkNode = null;
-    }
+    public SingleLinkNode() { }
 
     /////////////////////////
     // Getters and Setters //
     /////////////////////////
 
-    public Double getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(Double id) {
+    public void setId(Long id) {
         this.id = id;
-        this.value = "Logan was here " + id + " times!";
     }
 
     public String getValue() {

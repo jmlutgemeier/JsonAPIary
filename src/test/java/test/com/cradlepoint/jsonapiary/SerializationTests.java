@@ -54,9 +54,12 @@ public class SerializationTests {
         SingleLinkNode singleLinkNode2 = new SingleLinkNode();
         SingleLinkNode singleLinkNode3 = new SingleLinkNode();
 
-        singleLinkNode1.setId(1.0);
-        singleLinkNode2.setId(2.0);
-        singleLinkNode3.setId(3.0);
+        singleLinkNode1.setId(1l);
+        singleLinkNode1.setValue("theFIRSTvalue");
+        singleLinkNode2.setId(2l);
+        singleLinkNode2.setValue("THE. SECOND. VALUE.");
+        singleLinkNode3.setId(3l);
+        singleLinkNode3.setValue("The 3rd value.");
 
         singleLinkNode1.setLinkNode(singleLinkNode2);
         singleLinkNode2.setLinkNode(singleLinkNode3);
@@ -67,45 +70,45 @@ public class SerializationTests {
         Assert.assertNotNull(json);
         Assert.assertTrue(json.equals("{\n" +
                 "  \"data\" : {\n" +
-                "    \"id\" : \"1.0\",\n" +
-                "    \"type\" : \"SingleLinkNode\",\n" +
+                "    \"id\" : \"1\",\n" +
+                "    \"type\" : \"node\",\n" +
                 "    \"attributes\" : {\n" +
-                "      \"value\" : \"Logan was here 1.0 times!\"\n" +
+                "      \"element\" : \"theFIRSTvalue\"\n" +
                 "    },\n" +
                 "    \"relationships\" : {\n" +
                 "      \"link\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : \"2.0\",\n" +
-                "          \"type\" : \"SingleLinkNode\"\n" +
+                "          \"id\" : \"2\",\n" +
+                "          \"type\" : \"node\"\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }\n" +
                 "  },\n" +
                 "  \"included\" : [ {\n" +
-                "    \"id\" : \"2.0\",\n" +
-                "    \"type\" : \"SingleLinkNode\",\n" +
+                "    \"id\" : \"2\",\n" +
+                "    \"type\" : \"node\",\n" +
                 "    \"attributes\" : {\n" +
-                "      \"value\" : \"Logan was here 2.0 times!\"\n" +
+                "      \"element\" : \"THE. SECOND. VALUE.\"\n" +
                 "    },\n" +
                 "    \"relationships\" : {\n" +
                 "      \"link\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : \"3.0\",\n" +
-                "          \"type\" : \"SingleLinkNode\"\n" +
+                "          \"id\" : \"3\",\n" +
+                "          \"type\" : \"node\"\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }\n" +
                 "  }, {\n" +
-                "    \"id\" : \"3.0\",\n" +
-                "    \"type\" : \"SingleLinkNode\",\n" +
+                "    \"id\" : \"3\",\n" +
+                "    \"type\" : \"node\",\n" +
                 "    \"attributes\" : {\n" +
-                "      \"value\" : \"Logan was here 3.0 times!\"\n" +
+                "      \"element\" : \"The 3rd value.\"\n" +
                 "    },\n" +
                 "    \"relationships\" : {\n" +
                 "      \"link\" : {\n" +
                 "        \"data\" : {\n" +
-                "          \"id\" : \"1.0\",\n" +
-                "          \"type\" : \"SingleLinkNode\"\n" +
+                "          \"id\" : \"1\",\n" +
+                "          \"type\" : \"node\"\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }\n" +
@@ -755,6 +758,85 @@ public class SerializationTests {
 
         // Serialize and Verify //
         String json = objectMapper.writeValueAsString(new JsonApiEnvelope<TypeWithALink>(typeWithALink));
+    }
+
+    @Test
+    public void readmeTest() throws Exception {
+        // Init Test Objects //
+        SingleLinkNode singleLinkNode1 = new SingleLinkNode();
+        singleLinkNode1.setId(1l);
+        singleLinkNode1.setValue("ONE");
+
+        SingleLinkNode singleLinkNode2 = new SingleLinkNode();
+        singleLinkNode2.setId(2l);
+        singleLinkNode2.setValue("2nd");
+
+        SingleLinkNode singleLinkNode3 = new SingleLinkNode();
+        singleLinkNode3.setId(3l);
+        singleLinkNode3.setValue("tertiary.");
+
+        singleLinkNode1.setLinkNode(singleLinkNode2);
+        singleLinkNode2.setLinkNode(singleLinkNode3);
+        singleLinkNode3.setLinkNode(null);
+
+        // Serialize //
+        String json = objectMapper.writeValueAsString(new JsonApiEnvelope<SingleLinkNode>(singleLinkNode1));
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"data\" : {\n" +
+                "    \"id\" : \"1\",\n" +
+                "    \"type\" : \"node\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"element\" : \"ONE\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"link\" : {\n" +
+                "        \"data\" : {\n" +
+                "          \"id\" : \"2\",\n" +
+                "          \"type\" : \"node\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"included\" : [ {\n" +
+                "    \"id\" : \"2\",\n" +
+                "    \"type\" : \"node\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"element\" : \"2nd\"\n" +
+                "    },\n" +
+                "    \"relationships\" : {\n" +
+                "      \"link\" : {\n" +
+                "        \"data\" : {\n" +
+                "          \"id\" : \"3\",\n" +
+                "          \"type\" : \"node\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }, {\n" +
+                "    \"id\" : \"3\",\n" +
+                "    \"type\" : \"node\",\n" +
+                "    \"attributes\" : {\n" +
+                "      \"element\" : \"tertiary.\"\n" +
+                "    },\n" +
+                "    \"relationships\" : { }\n" +
+                "  } ]\n" +
+                "}"));
+
+        json = objectMapper.writeValueAsString(singleLinkNode1);
+        Assert.assertNotNull(json);
+        Assert.assertTrue(json.equals("{\n" +
+                "  \"id\" : 1,\n" +
+                "  \"value\" : \"ONE\",\n" +
+                "  \"link\" : {\n" +
+                "    \"id\" : 2,\n" +
+                "    \"value\" : \"2nd\",\n" +
+                "    \"link\" : {\n" +
+                "      \"id\" : 3,\n" +
+                "      \"value\" : \"tertiary.\",\n" +
+                "      \"link\" : null\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"));
     }
 
 }
