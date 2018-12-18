@@ -171,7 +171,6 @@ class JsonApiSerializer {
         switch (serializationContext) {
             case PRIMARY:
             case ATTRIBUTE:
-            case RELATIONSHIP:
             case META:
                 includes.addAll(
                         serializeMap(metas, JsonApiObjectContext.META, jsonGenerator, serializerProvider));

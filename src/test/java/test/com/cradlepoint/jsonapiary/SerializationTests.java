@@ -202,15 +202,6 @@ public class SerializationTests {
                 "        \"data\" : {\n" +
                 "          \"id\" : \"54321\",\n" +
                 "          \"type\" : \"SimpleNestedSubObject\"\n" +
-                "        },\n" +
-                "        \"meta\" : {\n" +
-                "          \"SOMEmetaSIMPLEobjectttttt\" : {\n" +
-                "            \"objectId\" : 4567,\n" +
-                "            \"objectAttribute\" : \"simpleObject2\",\n" +
-                "            \"ignoredThing\" : \"THIS SHOULDN'T BE HERE\",\n" +
-                "            \"objectBlah\" : \"blah!\",\n" +
-                "            \"catchAllThing\" : \"this should ahve been caught\"\n" +
-                "          }\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }\n" +
@@ -498,10 +489,6 @@ public class SerializationTests {
                 "        \"data\" : {\n" +
                 "          \"id\" : \"314\",\n" +
                 "          \"type\" : \"SimpleObject\"\n" +
-                "        },\n" +
-                "        \"meta\" : {\n" +
-                "          \"catchAllThing\" : \"this should ahve been caught\",\n" +
-                "          \"objectBlah\" : \"blah!\"\n" +
                 "        }\n" +
                 "      }\n" +
                 "    }\n" +
