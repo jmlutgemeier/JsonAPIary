@@ -12,4 +12,12 @@ public class JsonApiKeyConstants {
     public static final String META_DATA_KEY = "meta";
     public static final String RELATIONSHIPS_KEY = "relationships";
 
+    public static final String ERRORS_KEY = "errors";
+    public static final String STATUS_KEY = "status";
+    public static final String CODE_KEY = "code";
+    public static final String TITLE_KEY = "title";
+    public static final String DETAIL_KEY = "detail";
+    public static final String SOURCE_KEY = "source";
+    public static final String POINTER_KEY = "pointer";
+
 }

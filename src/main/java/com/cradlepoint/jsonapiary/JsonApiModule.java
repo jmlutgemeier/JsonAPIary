@@ -4,6 +4,7 @@ import com.cradlepoint.jsonapiary.annotations.JsonApiType;
 import com.cradlepoint.jsonapiary.deserializers.JsonApiEnvelopeDeserializer;
 import com.cradlepoint.jsonapiary.envelopes.JsonApiEnvelope;
 import com.cradlepoint.jsonapiary.serializers.JsonApiEnvelopeSerializer;
+import com.cradlepoint.jsonapiary.serializers.JsonApiErrorSerializer;
 import com.fasterxml.jackson.core.json.PackageVersion;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -74,6 +75,7 @@ public class JsonApiModule extends SimpleModule {
         // Register Envelope Serializers/Deserializers //
         this.addSerializer(new JsonApiEnvelopeSerializer());
         this.addDeserializer(JsonApiEnvelope.class, new JsonApiEnvelopeDeserializer(jsonApiTypeMap));
+        this.addSerializer(new JsonApiErrorSerializer());
     }
 
 }
