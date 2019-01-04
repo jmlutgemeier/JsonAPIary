@@ -43,7 +43,7 @@
 		<projectVersion>0.0.1-SNAPSHOT</projectVersion>
 
 		<!-- Dependency Versions -->
-		<jackson.version>2.9.6</jackson.version>
+		<jackson.version>2.9.8</jackson.version>
 		<apache.commons.version>3.7</apache.commons.version>
 		<junit.version>4.12</junit.version>
 	</properties>
