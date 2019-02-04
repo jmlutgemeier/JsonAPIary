@@ -2,6 +2,8 @@
 
 The JsonAPIary project is a library that makes it easy to serialize/deserialize Java objects into/out-of json conforming to the [JSON API specification](http://jsonapi.org/format/). The library accomplishes this by providing a module that can be registered on a [Jackson](https://github.com/FasterXML/jackson-databind) ObjectMapper.
 
+The motivation for this project is captured in this [blog post](https://cradlepoint.com/blog/logan-leyva/behind-code-series-java-jsonapi-journey).
+
 ## Getting Started
 
 ### Importing
