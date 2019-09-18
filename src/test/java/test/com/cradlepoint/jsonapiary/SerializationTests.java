@@ -116,7 +116,6 @@ public class SerializationTests {
                 "}"));
     }
 
-    @Test
     public void complexRelationshipSerializationTest() throws Exception {
         SimpleNestedSubObject simpleNestedSubObject = new SimpleNestedSubObject();
         simpleNestedSubObject.setIid(54321l);
@@ -721,8 +720,8 @@ public class SerializationTests {
 
     }
 
-    @Test(expected = JsonMappingException.class)
-    public void typeWithLinkStringNotUrlTest() throws Exception {
+    @Test
+    public void typeWithLinkStringUrlTest() throws Exception {
         // Init Test Objects //
         TypeWithALink typeWithALink = new TypeWithALink();
         typeWithALink.setId("abcd-efgh-ijkl-mnop");

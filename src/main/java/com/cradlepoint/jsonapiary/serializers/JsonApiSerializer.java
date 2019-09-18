@@ -72,6 +72,8 @@ class JsonApiSerializer {
                     jsonGenerator.writeNull();
                 } else if(object.getClass() == URL.class) {
                     jsonGenerator.writeString(object.toString());
+                } else if(object.getClass() == String.class) {
+                    jsonGenerator.writeString((String) object);
                 } else {
                     try {
                         URL url = new URL(object.toString());
