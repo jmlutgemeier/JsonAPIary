@@ -4,6 +4,7 @@ import com.cradlepoint.jsonapiary.annotations.JsonApiType;
 import com.cradlepoint.jsonapiary.constants.JsonApiKeyConstants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.Valid;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.List;
@@ -20,6 +21,7 @@ public class JsonApiEnvelope<T> {
      * JsonAPI annotated object to be serialized
      */
     @JsonProperty(JsonApiKeyConstants.DATA_KEY)
+    @Valid
     private T data;
 
     /**
